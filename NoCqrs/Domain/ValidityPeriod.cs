@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace NoCqrs.Domain
 {
-    public class ValidityPeriod : ICloneable
+    public class ValidityPeriod : ValueObject<ValidityPeriod>,  ICloneable
     {
         public virtual DateTime ValidFrom { get; private set; }
         public virtual DateTime ValidTo { get; private set; }
@@ -46,6 +47,11 @@ namespace NoCqrs.Domain
         object ICloneable.Clone()
         {
             return Clone();
+        }
+
+        protected override IEnumerable<object> GetAttributesToIncludeInEqualityCheck()
+        {
+            return new List<object> { ValidFrom, ValidTo };
         }
     }
 }
