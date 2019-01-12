@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCqrs", "NoCqrs\NoCqrs.csproj", "{824424B9-910F-46BC-B281-64E51BC50DD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCqrs.Tests", "NoCqrs.Tests\NoCqrs.Tests.csproj", "{7AD6C0F6-8263-4327-AA0A-1D30D9AB4A77}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{824424B9-910F-46BC-B281-64E51BC50DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{824424B9-910F-46BC-B281-64E51BC50DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{824424B9-910F-46BC-B281-64E51BC50DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{824424B9-910F-46BC-B281-64E51BC50DD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AD6C0F6-8263-4327-AA0A-1D30D9AB4A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AD6C0F6-8263-4327-AA0A-1D30D9AB4A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AD6C0F6-8263-4327-AA0A-1D30D9AB4A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AD6C0F6-8263-4327-AA0A-1D30D9AB4A77}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
