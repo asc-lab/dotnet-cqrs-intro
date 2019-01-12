@@ -14,6 +14,11 @@ namespace NoCqrs.Domain
             Code = code;
             Name = name;
         }
+
+        //required by EF
+        protected Cover()
+        {
+        }
     }
     
     

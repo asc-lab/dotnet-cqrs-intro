@@ -53,6 +53,11 @@ namespace NoCqrs.Domain
             }
         }
 
+        //required by EF
+        protected Offer()
+        {
+        }
+
         public bool Converted() => Status == OfferStatus.Converted;
 
         public bool Expired(DateTime theDate) => ValidityDate < theDate;
@@ -104,5 +109,10 @@ namespace NoCqrs.Domain
             Price = price;
             CoverPeriod = coverPeriod;
         }
+
+        //required by EF
+        protected CoverPrice()
+        {
+        } 
     }
 }

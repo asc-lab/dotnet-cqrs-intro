@@ -22,5 +22,10 @@ namespace NoCqrs.Domain
                 this.covers.Add(cover);    
             }
         }
+
+        //required by EF
+        protected Product()
+        {
+        }
     }
 }
