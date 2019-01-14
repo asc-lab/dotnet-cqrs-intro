@@ -15,7 +15,25 @@ namespace NoCqrs.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Product>(p =>
+            {
+                p.HasKey(product => product.Id);
+                var partsNav = p.Metadata.FindNavigation(nameof(Product.Covers));
+                partsNav.SetPropertyAccessMode(PropertyAccessMode.Field);    
+            });
+            
+            modelBuilder.Entity<Offer>(o =>
+            {
+                o.HasKey(offer => offer.Id);
+                var partsNav = o.Metadata.FindNavigation(nameof(Offer.Covers));
+                partsNav.SetPropertyAccessMode(PropertyAccessMode.Field);
+
+                o.OwnsOne(offer => offer.Customer);
+                o.OwnsOne(offer => offer.Driver);
+                o.OwnsOne(offer => offer.Car);
+
+            });
+            
         }
     }
 }

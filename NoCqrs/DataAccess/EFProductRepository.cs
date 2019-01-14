@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NoCqrs.Domain;
 
 namespace NoCqrs.DataAccess
@@ -19,7 +21,12 @@ namespace NoCqrs.DataAccess
 
         public Product WithCode(string code)
         {
-            return dbContext.Products.FirstOrDefault(p => p.Code == code);
+            return dbContext.Products.Include(p => p.Covers).FirstOrDefault(p => p.Code == code);
+        }
+
+        public List<Product> All()
+        {
+            return dbContext.Products.Include(p => p.Covers).ToList();
         }
     }
 }

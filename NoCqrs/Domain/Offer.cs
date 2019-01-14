@@ -20,8 +20,8 @@ namespace NoCqrs.Domain
         public Money TotalCost { get; private set; }
         public DateTime CreationDate { get; private set; }
         public DateTime ValidityDate => CreationDate.AddDays(30);
-        private IList<CoverPrice> covers = new List<CoverPrice>();
-        public IReadOnlyCollection<CoverPrice> Covers => new ReadOnlyCollection<CoverPrice>(covers);
+        private List<CoverPrice> covers = new List<CoverPrice>();
+        public IEnumerable<CoverPrice> Covers => covers.AsReadOnly();
 
         public Offer
         (

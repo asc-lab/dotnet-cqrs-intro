@@ -9,8 +9,8 @@ namespace NoCqrs.Domain
         public Guid Id { get; private set; }
         public string Code { get; private set; }
         public string Name { get; private set; }
-        protected List<Cover> covers = new List<Cover>();
-        public IReadOnlyCollection<Cover> Covers => new ReadOnlyCollection<Cover>(covers);
+        private List<Cover> covers = new List<Cover>();
+        public IEnumerable<Cover> Covers => covers.AsReadOnly();
 
         public Product(Guid id, string code, string name, IList<Cover> covers)
         {

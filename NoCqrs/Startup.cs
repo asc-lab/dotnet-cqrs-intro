@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NoCqrs.Init;
 using NoCqrs.Installers;
 using NoCqrs.Services;
 
@@ -46,6 +47,7 @@ namespace NoCqrs
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseDbInitializer();
         }
     }
 }

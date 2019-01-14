@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NoCqrs.Domain;
+using NoCqrs.Services;
 
 namespace NoCqrs.Controllers
 {
@@ -10,6 +12,15 @@ namespace NoCqrs.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly PolicyService policyService;
+        private readonly IDataStore dataStore;
+
+        public ValuesController(PolicyService policyService, IDataStore dataStore)
+        {
+            this.policyService = policyService;
+            this.dataStore = dataStore;
+        }
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
