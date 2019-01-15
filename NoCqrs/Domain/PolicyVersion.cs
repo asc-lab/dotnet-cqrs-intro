@@ -17,6 +17,7 @@ namespace NoCqrs.Domain
         public Car Car { get; private set; }
         public Money TotalPremium { get; private set; }
         private List<PolicyCover> covers = new List<PolicyCover>();
+        public IEnumerable<PolicyCover> Covers => covers.AsReadOnly();
 
         public PolicyVersion
         (
@@ -58,15 +59,20 @@ namespace NoCqrs.Domain
             VersionNumber = versionNumber;
             VersionValidityPeriod = ValidityPeriod.Between(startDate, baseVersion.CoverPeriod.ValidTo);
             CoverPeriod = ValidityPeriod.Between(baseVersion.CoverPeriod.ValidFrom, baseVersion.CoverPeriod.ValidTo);
-            PolicyHolder = baseVersion.PolicyHolder;
-            Driver = baseVersion.Driver;
-            Car = baseVersion.Car;
+            PolicyHolder = baseVersion.PolicyHolder.Copy();
+            Driver = baseVersion.Driver.Copy();
+            Car = baseVersion.Car.Copy();
             foreach (var oldCover in baseVersion.covers)
             {
                 covers.Add(oldCover);
             }
 
             TotalPremium = RecalculateTotal();
+        }
+
+        // required by EF
+        protected PolicyVersion()
+        {
         }
 
         public void AddCover(CoverPrice coverPrice, DateTime coverStart, DateTime coverEnd)

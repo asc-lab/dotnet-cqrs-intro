@@ -9,7 +9,6 @@ namespace NoCqrs.Tests
         {
             return new Car
             (
-                Guid.NewGuid(),
                 "Ford Focus",
                 "WAW1010",
                 2005

@@ -11,7 +11,7 @@ namespace NoCqrs.Domain
         public Product Product { get; private set; }
         public PolicyStatus Status { get; private set; }
         private List<PolicyVersion> versions = new List<PolicyVersion>();
-        public IReadOnlyCollection<PolicyVersion> Versions => new ReadOnlyCollection<PolicyVersion>(versions);
+        public IEnumerable<PolicyVersion> Versions => versions.AsReadOnly();
         public DateTime PurchaseDate { get; private set; }
 
         public static Policy ConvertOffer(Offer offer, string PolicyNumber, DateTime purchaseDate, DateTime policyStartDate)
@@ -109,9 +109,9 @@ namespace NoCqrs.Domain
                 1,
                 ValidityPeriod.Between(policyStartDate, policyStartDate.Add(offer.CoverPeriod)),
                 ValidityPeriod.Between(policyStartDate, policyStartDate.Add(offer.CoverPeriod)),
-                offer.Customer,
-                offer.Driver,
-                offer.Car,
+                offer.Customer.Copy(),
+                offer.Driver.Copy(),
+                offer.Car.Copy(),
                 offer.TotalCost,
                 offer.Covers
             );

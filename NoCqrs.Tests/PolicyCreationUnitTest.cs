@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NoCqrs.Domain;
 using NodaMoney;
 using Xunit;
@@ -17,7 +18,7 @@ namespace NoCqrs.Tests
             
             NotNull(policy);
             Equal(PolicyStatus.Active, policy.Status);
-            Equal(1, policy.Versions.Count);
+            Single(policy.Versions);
             Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).Status);
             Equal(Money.Euro(500), policy.Versions.WithNumber(1).TotalPremium);
         }

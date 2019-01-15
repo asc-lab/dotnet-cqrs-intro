@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NoCqrs.Domain;
 using NodaMoney;
 using Xunit;
@@ -32,7 +33,7 @@ namespace NoCqrs.Tests
                 new CoverPrice(Guid.NewGuid(),newCover, Money.Euro(100) , TimeSpan.FromDays(365))
             );
             
-            Equal(2, policy.Versions.Count);
+            Equal(2, policy.Versions.Count());
             Equal(Money.Euro(500), policy.Versions.WithNumber(1).TotalPremium);
             Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).Status);
             Equal(Money.Euro(550.41), policy.Versions.WithNumber(2).TotalPremium);

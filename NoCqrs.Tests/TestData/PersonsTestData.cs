@@ -9,7 +9,6 @@ namespace NoCqrs.Tests
         {
             return new Person
             (
-                Guid.NewGuid(), 
                 "Jan",
                 "Kowalski",
                 "1111111116"

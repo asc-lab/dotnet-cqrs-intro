@@ -12,15 +12,6 @@ namespace NoCqrs.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly PolicyService policyService;
-        private readonly IDataStore dataStore;
-
-        public ValuesController(PolicyService policyService, IDataStore dataStore)
-        {
-            this.policyService = policyService;
-            this.dataStore = dataStore;
-        }
-
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -30,7 +21,7 @@ namespace NoCqrs.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<string> Get(string id)
         {
             return "value";
         }

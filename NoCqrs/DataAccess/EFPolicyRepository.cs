@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NoCqrs.Domain;
 
 namespace NoCqrs.DataAccess
@@ -14,12 +16,18 @@ namespace NoCqrs.DataAccess
 
         public Policy WithNumber(string number)
         {
-            throw new System.NotImplementedException();
+            return dbContext
+                .Policies
+                .Include(p => p.Product)
+                .Include(p => p.Versions)
+                .ThenInclude(pv => pv.Covers)
+                .ThenInclude(c => c.Cover)
+                .FirstOrDefault(p => p.Number == number);
         }
 
         public void Add(Policy policy)
         {
-            throw new System.NotImplementedException();
+            dbContext.Policies.Add(policy);
         }
 
         public IList<Policy> Find(PolicyFilter filter)

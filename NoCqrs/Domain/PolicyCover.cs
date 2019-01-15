@@ -24,6 +24,11 @@ namespace NoCqrs.Domain
             Amount = CalculateAmount();
         }
 
+        // required by EF
+        protected PolicyCover()
+        {
+        }
+
         private Money CalculateAmount()
         {
             return decimal.Divide(CoverPeriod.Days, PricePeriod.Days) * Price;
