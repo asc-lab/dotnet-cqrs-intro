@@ -17,9 +17,9 @@ namespace NoCqrs.Tests
             var policy = Policy.ConvertOffer(offer,"POL0001", new DateTime(2019,1,12), new DateTime(2019,1,15));
             
             NotNull(policy);
-            Equal(PolicyStatus.Active, policy.Status);
             Single(policy.Versions);
-            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).Status);
+            Equal(PolicyStatus.Active, policy.Versions.WithNumber(1).PolicyStatus);
+            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).VersionStatus);
             Equal(Money.Euro(500), policy.Versions.WithNumber(1).TotalPremium);
         }
         

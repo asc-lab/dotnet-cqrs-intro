@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace NoCqrs.Domain
 {
@@ -9,7 +10,6 @@ namespace NoCqrs.Domain
         public Guid Id { get; private set; }
         public string Number { get; private set; }
         public Product Product { get; private set; }
-        public PolicyStatus Status { get; private set; }
         private List<PolicyVersion> versions = new List<PolicyVersion>();
         public IEnumerable<PolicyVersion> Versions => versions.AsReadOnly();
         public DateTime PurchaseDate { get; private set; }
@@ -44,7 +44,6 @@ namespace NoCqrs.Domain
                 Id = Guid.NewGuid(),
                 Number = PolicyNumber,
                 Product = offer.Product,
-                Status = PolicyStatus.Active,
                 PurchaseDate = purchaseDate
             };
 
@@ -82,10 +81,46 @@ namespace NoCqrs.Domain
             annexVer.AddCover(newCover, effectiveDateOfChange, annexVer.CoverPeriod.ValidTo);
 
         }
-        
+
+        private bool Terminated()
+        {
+            return versions.Any(v => v.IsActive() && v.PolicyStatus == PolicyStatus.Terminated);
+        }
+
         public void TerminatePolicy(DateTime effectiveDateOfChange)
         {
+            if (Terminated())
+            {
+                throw new ApplicationException("Policy already terminated");
+            } 
             
+            var versionAtEffectiveDate = versions.EffectiveAtDate(effectiveDateOfChange);
+
+            if (versionAtEffectiveDate == null)
+            {
+                throw new ApplicationException("No active version at given date");    
+            }
+            
+            var termVer = AddNewVersionBasedOn
+            (
+                versionAtEffectiveDate, 
+                effectiveDateOfChange
+            );
+
+            termVer.EndPolicyOn(effectiveDateOfChange.AddDays(-1));
+
+        }
+
+        public void CancelLastAnnex()
+        {
+            var lastActiveVer = versions.LatestActive();
+
+            if (lastActiveVer.VersionNumber == 1)
+            {
+                throw new ApplicationException("There are no annexed left to cancel");
+            }
+
+            lastActiveVer.Cancel();
         }
 
         public void ConfirmChanges(int versionToConfirmNumber)
@@ -108,6 +143,7 @@ namespace NoCqrs.Domain
                 Guid.NewGuid(),
                 1,
                 ValidityPeriod.Between(policyStartDate, policyStartDate.Add(offer.CoverPeriod)),
+                PolicyStatus.Active,
                 ValidityPeriod.Between(policyStartDate, policyStartDate.Add(offer.CoverPeriod)),
                 offer.Customer.Copy(),
                 offer.Driver.Copy(),
@@ -132,8 +168,6 @@ namespace NoCqrs.Domain
             versions.Add(newVersion);
             return newVersion;
         }
-
-        private bool Terminated() => Status == PolicyStatus.Terminated;
 
     }
 

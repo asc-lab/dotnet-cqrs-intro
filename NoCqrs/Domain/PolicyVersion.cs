@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication.Internal;
 using NodaMoney;
 
 namespace NoCqrs.Domain
@@ -9,7 +10,8 @@ namespace NoCqrs.Domain
     {
         public Guid Id { get; private set; }
         public int VersionNumber { get; private set; }
-        public PolicyVersionStatus Status { get; private set; }
+        public PolicyVersionStatus VersionStatus { get; private set; }
+        public PolicyStatus PolicyStatus { get; private set; }
         public ValidityPeriod VersionValidityPeriod { get; private set; }
         public ValidityPeriod CoverPeriod { get; private set; }
         public Person PolicyHolder { get; private set; }
@@ -24,6 +26,7 @@ namespace NoCqrs.Domain
             Guid id,
             int versionNumber,
             ValidityPeriod versionValidityPeriod,
+            PolicyStatus policyStatus,
             ValidityPeriod coverPeriod,
             Person policyHolder,
             Person driver,
@@ -34,8 +37,9 @@ namespace NoCqrs.Domain
         {
             Id = id;
             VersionNumber = versionNumber;
-            Status = PolicyVersionStatus.Draft;
+            VersionStatus = PolicyVersionStatus.Draft;
             VersionValidityPeriod = versionValidityPeriod;
+            PolicyStatus = policyStatus;
             CoverPeriod = coverPeriod;
             PolicyHolder = policyHolder;
             Driver = driver;
@@ -58,6 +62,7 @@ namespace NoCqrs.Domain
             Id = Guid.NewGuid();
             VersionNumber = versionNumber;
             VersionValidityPeriod = ValidityPeriod.Between(startDate, baseVersion.CoverPeriod.ValidTo);
+            PolicyStatus = baseVersion.PolicyStatus;
             CoverPeriod = ValidityPeriod.Between(baseVersion.CoverPeriod.ValidFrom, baseVersion.CoverPeriod.ValidTo);
             PolicyHolder = baseVersion.PolicyHolder.Copy();
             Driver = baseVersion.Driver.Copy();
@@ -106,10 +111,41 @@ namespace NoCqrs.Domain
                 throw new ApplicationException("Only draft can be confirmed");
             }
 
-            Status = PolicyVersionStatus.Active;
+            VersionStatus = PolicyVersionStatus.Active;
         }
 
-        public bool IsDraft() => Status == PolicyVersionStatus.Draft;
+        public bool IsDraft() => VersionStatus == PolicyVersionStatus.Draft;
+
+        public bool IsActive() => VersionStatus == PolicyVersionStatus.Active;
+
+        public void EndPolicyOn(DateTime lastDayOfCover)
+        {
+            if (!IsDraft())
+            {
+                throw new ApplicationException("Only draft versions can be altered");
+            }
+
+            CoverPeriod = CoverPeriod.EndOn(lastDayOfCover);
+
+            foreach (var cover in covers)
+            {
+                cover.EndCoverOn(lastDayOfCover);
+            }
+            
+            TotalPremium = RecalculateTotal();
+
+            PolicyStatus = PolicyStatus.Terminated;
+        }
+
+        public void Cancel()
+        {
+            if (!IsActive())
+            {
+                throw new ApplicationException("Only active version can be cancelled");
+            }
+
+            VersionStatus = PolicyVersionStatus.Cancelled;
+        }
     }
 
     public enum PolicyVersionStatus

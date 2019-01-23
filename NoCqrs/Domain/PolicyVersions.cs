@@ -24,5 +24,13 @@ namespace NoCqrs.Domain
         {
             return versions.FirstOrDefault(v => v.VersionNumber == versionNumber);
         }
+        
+        public static PolicyVersion LatestActive(this IEnumerable<PolicyVersion> versions)
+        {
+            return versions
+                .Where(v => v.VersionStatus == PolicyVersionStatus.Active)
+                .OrderByDescending(v => v.VersionNumber)
+                .FirstOrDefault();
+        }
     }
 }

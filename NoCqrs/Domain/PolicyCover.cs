@@ -28,10 +28,18 @@ namespace NoCqrs.Domain
         protected PolicyCover()
         {
         }
+        
+        
+        public void EndCoverOn(DateTime lastDayOfCover)
+        {
+            CoverPeriod = CoverPeriod.EndOn(lastDayOfCover);
+            Amount = CalculateAmount();
+        }
 
         private Money CalculateAmount()
         {
             return decimal.Divide(CoverPeriod.Days, PricePeriod.Days) * Price;
         }
+
     }
 }
