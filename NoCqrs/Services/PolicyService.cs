@@ -44,5 +44,12 @@ namespace NoCqrs.Services
                 .Select(p => PolicyInfoDtoAssembler.AssemblePolicyInfoDto(p, p.CurrentVersion))
                 .ToList();
         }
+
+        public PolicyDto GetPolicyDetails(string policyNumber)
+        {
+            var policy = dataStore.Policies.WithNumber(policyNumber);
+            
+            return policy!=null ? PolicyDtoAssembler.AssemblePolicyDto(policy) : null;
+        }
     }
 }
