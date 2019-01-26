@@ -18,11 +18,11 @@ namespace NoCqrs.Domain
         public string PolicyNumber { get; private set; }
         public string PolicyHolderFirstName { get; private set; }
         public string PolicyHolderLastName { get; private set; }
-        public DateTime PolicyStartDateFrom { get; private set; }
-        public DateTime PolicyStartDateTo { get; private set; }
+        public DateTime? PolicyStartDateFrom { get; private set; }
+        public DateTime? PolicyStartDateTo { get; private set; }
         public string CarPlateNumber { get; private set; }
 
-        public PolicyFilter(string policyNumber, string policyHolderFirstName, string policyHolderLastName, DateTime policyStartDateFrom, DateTime policyStartDateTo, string carPlateNumber)
+        public PolicyFilter(string policyNumber, string policyHolderFirstName, string policyHolderLastName, DateTime? policyStartDateFrom, DateTime? policyStartDateTo, string carPlateNumber)
         {
             PolicyNumber = policyNumber;
             PolicyHolderFirstName = policyHolderFirstName;

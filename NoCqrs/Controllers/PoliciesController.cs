@@ -21,5 +21,14 @@ namespace NoCqrs.Controllers
             var response = policyService.CreatePolicy(createPolicyRequest);
             return Ok(response);
         }
+
+
+
+        [HttpPost("/find")]
+        public IActionResult Find([FromBody] SearchPolicyRequest searchPolicyRequest)
+        {
+            var response = policyService.SearchPolicies(searchPolicyRequest);
+            return Ok(response);
+        }
     }
 }

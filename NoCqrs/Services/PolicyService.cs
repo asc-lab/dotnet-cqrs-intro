@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NoCqrs.Domain;
 
 namespace NoCqrs.Services
@@ -22,6 +24,25 @@ namespace NoCqrs.Services
             {
                 PolicyNumber = policy.Number
             };
+        }
+
+        public List<PolicyInfoDto> SearchPolicies(SearchPolicyRequest request)
+        {
+            var policyFilter = new PolicyFilter
+            (
+                request.PolicyNumber,
+                request.PolicyHolderFirstName,
+                request.PolicyHolderLastName,
+                request.PolicyStartFrom,
+                request.PolicyStartTo,
+                request.CarPlateNumber
+            );
+
+            var results = dataStore.Policies.Find(policyFilter);
+
+            return results
+                .Select(p => PolicyInfoDtoAssembler.AssemblePolicyInfoDto(p, p.CurrentVersion))
+                .ToList();
         }
     }
 }
