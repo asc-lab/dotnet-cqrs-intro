@@ -28,6 +28,7 @@ namespace NoCqrs.Services
         public DateTime VersionTo { get; set; }
         public decimal TotalPremium { get; set; }
         public List<CoverDto> Covers { get; set; }
+        public List<string> Changes { get; set; }
     }
 
     public class CoverDto

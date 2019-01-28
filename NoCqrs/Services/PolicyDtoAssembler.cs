@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using NoCqrs.Domain;
 
@@ -11,15 +12,15 @@ namespace NoCqrs.Services
             {
                 PolicyId = policy.Id,
                 PolicyNumber = policy.Number,
-                CurrentVersion = PolicyVersionDtoAssembler.AssemblePolicyVersionDto(policy.CurrentVersion),
-                Versions = policy.Versions.Select(PolicyVersionDtoAssembler.AssemblePolicyVersionDto).ToList()
+                CurrentVersion = PolicyVersionDtoAssembler.AssemblePolicyVersionDto(policy, policy.CurrentVersion),
+                Versions = policy.Versions.Select(v => PolicyVersionDtoAssembler.AssemblePolicyVersionDto(policy, v)).ToList()
             };
         }
     }
 
     public static class PolicyVersionDtoAssembler
     {
-        public static PolicyVersionDto AssemblePolicyVersionDto(PolicyVersion version)
+        public static PolicyVersionDto AssemblePolicyVersionDto(Policy policy, PolicyVersion version)
         {
             return new PolicyVersionDto
             {
@@ -34,8 +35,19 @@ namespace NoCqrs.Services
                 VersionFrom = version.VersionValidityPeriod.ValidFrom,
                 VersionTo = version.VersionValidityPeriod.ValidTo,
                 TotalPremium = version.TotalPremium.Amount,
-                Covers = version.Covers.Select(CoverDtoAssembler.AssembleCoverDto).ToList()
+                Covers = version.Covers.Select(CoverDtoAssembler.AssembleCoverDto).ToList(),
+                Changes = AssembleChanges(policy, version)
             };
+        }
+
+        private static List<string> AssembleChanges(Policy policy, PolicyVersion version)
+        {
+            if (!version.BaseVersionNumber.HasValue)
+                return new List<string>() {};
+
+            var baseVersion = policy.Versions.WithNumber(version.BaseVersionNumber.Value);
+
+            return PolicyVersionComparer.Of(version, baseVersion).Compare();
         }
     }
 

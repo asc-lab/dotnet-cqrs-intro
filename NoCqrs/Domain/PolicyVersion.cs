@@ -10,6 +10,7 @@ namespace NoCqrs.Domain
     {
         public Guid Id { get; private set; }
         public int VersionNumber { get; private set; }
+        public int? BaseVersionNumber { get; private set; }
         public PolicyVersionStatus VersionStatus { get; private set; }
         public PolicyStatus PolicyStatus { get; private set; }
         public ValidityPeriod VersionValidityPeriod { get; private set; }
@@ -37,6 +38,7 @@ namespace NoCqrs.Domain
         {
             Id = id;
             VersionNumber = versionNumber;
+            BaseVersionNumber = null;
             VersionStatus = PolicyVersionStatus.Draft;
             VersionValidityPeriod = versionValidityPeriod;
             PolicyStatus = policyStatus;
@@ -61,6 +63,7 @@ namespace NoCqrs.Domain
         {
             Id = Guid.NewGuid();
             VersionNumber = versionNumber;
+            BaseVersionNumber = baseVersion.VersionNumber;
             VersionValidityPeriod = ValidityPeriod.Between(startDate, baseVersion.CoverPeriod.ValidTo);
             PolicyStatus = baseVersion.PolicyStatus;
             CoverPeriod = ValidityPeriod.Between(baseVersion.CoverPeriod.ValidFrom, baseVersion.CoverPeriod.ValidTo);
