@@ -15,16 +15,16 @@ namespace SeparateModels.Commands
         }
 
 
-        public Task<ConfirmTerminationResult> Handle(ConfirmTerminationCommand command, CancellationToken cancellationToken)
+        public async Task<ConfirmTerminationResult> Handle(ConfirmTerminationCommand command, CancellationToken cancellationToken)
         {
             var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.ConfirmChanges(command.VersionToConfirmNumber);
-            dataStore.CommitChanges();
-            return Task.FromResult(new ConfirmTerminationResult
+            await dataStore.CommitChanges();
+            return new ConfirmTerminationResult
             {
                 PolicyNumber = policy.Number,
                 VersionConfirmed = policy.Versions.LatestActive().VersionNumber
-            });
+            };
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SeparateModels.Commands
             this.dataStore = dataStore;
         }
 
-        public Task<BuyAdditionalCoverResult> Handle(BuyAdditionalCoverCommand request, CancellationToken cancellationToken)
+        public async Task<BuyAdditionalCoverResult> Handle(BuyAdditionalCoverCommand request, CancellationToken cancellationToken)
         {
             var policy = dataStore.Policies.WithNumber(request.PolicyNumber);
             var newCover = policy.Product.Covers.WithCode(request.NewCoverCode);
@@ -28,13 +28,13 @@ namespace SeparateModels.Commands
                 new CoverPrice(newCover,Money.Euro(request.NewCoverPrice),request.NewCoverPriceUnit)
             );
             var newPolicyVersion = policy.Versions.Last();
-            dataStore.CommitChanges();
+            await dataStore.CommitChanges();
             
-            return Task.FromResult(new BuyAdditionalCoverResult
+            return new BuyAdditionalCoverResult
             {
                 PolicyNumber = policy.Number,
                 VersionWithAdditionalCoversNumber = newPolicyVersion.VersionNumber
-            });
+            };
         }
     }
 }

@@ -15,16 +15,16 @@ namespace SeparateModels.Commands
             this.dataStore = dataStore;
         }
 
-        public Task<ConfirmBuyAdditionalCoverResult> Handle(ConfirmBuyAdditionalCoverCommand command, CancellationToken cancellationToken)
+        public async Task<ConfirmBuyAdditionalCoverResult> Handle(ConfirmBuyAdditionalCoverCommand command, CancellationToken cancellationToken)
         {
             var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.ConfirmChanges(command.VersionToConfirmNumber);
-            dataStore.CommitChanges();
-            return Task.FromResult(new ConfirmBuyAdditionalCoverResult
+            await dataStore.CommitChanges();
+            return new ConfirmBuyAdditionalCoverResult
             {
                 PolicyNumber = policy.Number,
                 VersionConfirmed = policy.Versions.LatestActive().VersionNumber
-            });
+            };
         }
     }
 }

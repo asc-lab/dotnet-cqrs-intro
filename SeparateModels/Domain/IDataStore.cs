@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace SeparateModels.Domain
 {
     public interface IDataStore
@@ -5,6 +7,6 @@ namespace SeparateModels.Domain
         IProductRepository Products { get; }
         IOfferRepository Offers { get; }
         IPolicyRepository Policies { get; }
-        void CommitChanges();
+        Task CommitChanges();
     }
 }

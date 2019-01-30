@@ -15,20 +15,18 @@ namespace SeparateModels.Commands
             this.dataStore = dataStore;
         }
 
-        public Task<CreatePolicyResult> Handle(CreatePolicyCommand command, CancellationToken cancellationToken)
+        public async Task<CreatePolicyResult> Handle(CreatePolicyCommand command, CancellationToken cancellationToken)
         {
             var offer = dataStore.Offers.WithNumber(command.OfferNumber);
             var policy = Policy.ConvertOffer(offer, Guid.NewGuid().ToString(), command.PurchaseDate,
                 command.PolicyStartDate);
             dataStore.Policies.Add(policy);
-            dataStore.CommitChanges();
+            await dataStore.CommitChanges();
             
-            return Task.FromResult(
-                new CreatePolicyResult
-                {
-                    PolicyNumber = policy.Number
-                }
-            );
+            return new CreatePolicyResult
+            {
+                PolicyNumber = policy.Number
+            };
         }
     }
 }

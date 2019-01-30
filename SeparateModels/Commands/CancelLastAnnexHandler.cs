@@ -15,16 +15,16 @@ namespace SeparateModels.Commands
             this.dataStore = dataStore;
         }
 
-        public Task<CancelLastAnnexResult> Handle(CancelLastAnnexCommand command, CancellationToken cancellationToken)
+        public async Task<CancelLastAnnexResult> Handle(CancelLastAnnexCommand command, CancellationToken cancellationToken)
         {
             var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.CancelLastAnnex();
-            dataStore.CommitChanges();
-            return Task.FromResult(new CancelLastAnnexResult
+            await dataStore.CommitChanges();
+            return new CancelLastAnnexResult
             {
                 PolicyNumber = policy.Number,
                 LastActiveVersionNumber = policy.Versions.LatestActive().VersionNumber
-            });
+            };
         }
     }
 }

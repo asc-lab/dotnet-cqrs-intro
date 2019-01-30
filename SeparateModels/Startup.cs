@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SeparateModels.DataAccess.Marten;
 using SeparateModels.Init;
 using SeparateModels.Installers;
 using SeparateModels.Services;
@@ -22,6 +24,8 @@ namespace SeparateModels
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMediatR();
+            services.AddMarten(Configuration.GetConnectionString("DefaultConnection"));
             //services.AddEF(Configuration);
             //services.AddScoped<PolicyService>();
         }

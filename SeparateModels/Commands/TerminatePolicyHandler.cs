@@ -17,16 +17,16 @@ namespace SeparateModels.Commands
             this.dataStore = dataStore;
         }
 
-        public Task<TerminatePolicyResult> Handle(TerminatePolicyCommand command, CancellationToken cancellationToken)
+        public async Task<TerminatePolicyResult> Handle(TerminatePolicyCommand command, CancellationToken cancellationToken)
         {
             var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.TerminatePolicy(command.TerminationDate);
-            dataStore.CommitChanges();
-            return Task.FromResult(new TerminatePolicyResult
+            await dataStore.CommitChanges();
+            return new TerminatePolicyResult
             {
                 PolicyNumber = policy.Number,
                 VersionWithTerminationNumber = policy.Versions.Last().VersionNumber
-            });
+            };
         }
     }
 }
