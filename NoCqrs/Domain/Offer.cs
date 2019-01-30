@@ -109,6 +109,14 @@ namespace NoCqrs.Domain
             Price = price;
             CoverPeriod = coverPeriod;
         }
+        
+        public CoverPrice(Cover cover, Money price, TimeSpan coverPeriod)
+        {
+            Id = Guid.NewGuid();
+            Cover = cover;
+            Price = price;
+            CoverPeriod = coverPeriod;
+        }
 
         //required by EF
         protected CoverPrice()

@@ -14,11 +14,45 @@ namespace NoCqrs.Controllers
             this.policyService = policyService;
         }
 
-        // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody] CreatePolicyRequest createPolicyRequest)
+        public IActionResult CreatePolicy([FromBody] CreatePolicyRequest request)
         {
-            var result = policyService.CreatePolicy(createPolicyRequest);
+            var result = policyService.CreatePolicy(request);
+            return Ok(result);
+        }
+        
+        [HttpPost("/BuyAdditionalCover")]
+        public IActionResult BuyAdditionalCover([FromBody] BuyAdditionalCoverRequest request)
+        {
+            var result = policyService.BuyAdditionalCover(request);
+            return Ok(result);
+        }
+        
+        [HttpPost("/ConfirmBuyAdditionalCover")]
+        public IActionResult Post([FromBody] ConfirmBuyAdditionalCoverRequest request)
+        {
+            var result = policyService.ConfirmBuyAdditionalCover(request);
+            return Ok(result);
+        }
+        
+        [HttpPost("/Terminate")]
+        public IActionResult Terminate([FromBody] TerminatePolicyRequest request)
+        {
+            var result = policyService.TerminatePolicy(request);
+            return Ok(result);
+        }
+        
+        [HttpPost("/ConfirmTermination")]
+        public IActionResult ConfirmTermination([FromBody] ConfirmTerminationRequest request)
+        {
+            var result = policyService.ConfirmTermination(request);
+            return Ok(result);
+        }
+        
+        [HttpPost("/CancelLastAnnex")]
+        public IActionResult CancelLastAnnex([FromBody] CancelLastAnnexRequest request)
+        {
+            var result = policyService.CancelLastAnnex(request);
             return Ok(result);
         }
 
