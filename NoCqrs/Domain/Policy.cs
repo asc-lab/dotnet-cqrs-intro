@@ -101,7 +101,12 @@ namespace NoCqrs.Domain
             {
                 throw new ApplicationException("No active version at given date");    
             }
-            
+
+            if (!versionAtEffectiveDate.CoverPeriod.Contains(effectiveDateOfChange))
+            {
+                throw new ApplicationException("Cannot terminate policy at given date as it is not withing cover period");    
+            }
+
             var termVer = AddNewVersionBasedOn
             (
                 versionAtEffectiveDate, 

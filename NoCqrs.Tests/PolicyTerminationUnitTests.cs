@@ -27,5 +27,14 @@ namespace NoCqrs.Tests
             Equal(new DateTime(2019,1,1), policy.Versions.WithNumber(2).CoverPeriod.ValidFrom);
             Equal(Money.Euro(246.58), policy.Versions.WithNumber(2).TotalPremium);
         }
+        
+        [Fact]
+        public void CannotTerminatePolicyAfterCoverEnds()
+        {
+            var policy = PolicyTestData.StandardOneYearPolicy(new DateTime(2019, 1, 1));
+            var terminationDate = new DateTime(2020, 1, 2);
+            var ex = Assert.Throws<ApplicationException>(() => policy.TerminatePolicy(terminationDate));
+            Equal("No active version at given date", ex.Message);
+        }
     }
 }
