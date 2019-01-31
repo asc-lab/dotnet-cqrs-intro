@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SeparateModels.Domain
 {
@@ -6,8 +7,8 @@ namespace SeparateModels.Domain
     {
         void Add(Product product);
 
-        Product WithCode(string code);
+        Task<Product> WithCode(string code);
 
-        List<Product> All();
+        Task<IReadOnlyList<Product>> All();
     }
 }

@@ -17,7 +17,7 @@ namespace SeparateModels.Commands
 
         public async Task<CancelLastAnnexResult> Handle(CancelLastAnnexCommand command, CancellationToken cancellationToken)
         {
-            var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.CancelLastAnnex();
             await dataStore.CommitChanges();
             return new CancelLastAnnexResult

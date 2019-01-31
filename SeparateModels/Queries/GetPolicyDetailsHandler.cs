@@ -15,13 +15,11 @@ namespace SeparateModels.Queries
             this.dataStore = dataStore;
         }
 
-        public Task<PolicyDto> Handle(GetPolicyDetailsQuery query, CancellationToken cancellationToken)
+        public async Task<PolicyDto> Handle(GetPolicyDetailsQuery query, CancellationToken cancellationToken)
         {
-            var policy = dataStore.Policies.WithNumber(query.PolicyNumber);
+            var policy = await dataStore.Policies.WithNumber(query.PolicyNumber);
             
-            return Task.FromResult(
-                policy!=null ? PolicyDtoAssembler.AssemblePolicyDto(policy) : null
-            );
+            return policy!=null ? PolicyDtoAssembler.AssemblePolicyDto(policy) : null;
         }
     }
 }

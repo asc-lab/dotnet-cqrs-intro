@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Marten;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
@@ -9,7 +10,7 @@ using SeparateModels.Domain;
 
 namespace SeparateModels.DataAccess.Marten
 {
-    public class MartenDataStore : IDataStore //, IDisposable
+    public class MartenDataStore : IDataStore ,IDisposable
     {
         private readonly IDocumentSession session;
 
@@ -40,7 +41,7 @@ namespace SeparateModels.DataAccess.Marten
         {
             if (disposing)
             {
-                //session.Dispose();
+                session.Dispose();
             }
             
         }
@@ -60,15 +61,15 @@ namespace SeparateModels.DataAccess.Marten
             session.Insert(product);
         }
 
-        public Product WithCode(string code)
+        public async Task<Product> WithCode(string code)
         {
-            return session.Query<Product>().FirstOrDefault(p => p.Code == code);
+            return await session.Query<Product>().FirstOrDefaultAsync((p => p.Code == code));
         }
 
         //TODO: get rid of it
-        public List<Product> All()
+        public async Task<IReadOnlyList<Product>> All()
         {
-            return session.Query<Product>().ToList();
+            return await session.Query<Product>().ToListAsync();
         }
     }
 
@@ -81,15 +82,15 @@ namespace SeparateModels.DataAccess.Marten
             this.session = session;
         }
 
-        public Offer WithNumber(string number)
+        public async Task<Offer> WithNumber(string number)
         {
-            return session.Query<Offer>().FirstOrDefault(o => o.Number == number);
+            return await session.Query<Offer>().FirstOrDefaultAsync(o => o.Number == number);
         }
 
         //TODO: get rid of it
-        public List<Offer> All()
+        public async Task<IReadOnlyList<Offer>> All()
         {
-            return session.Query<Offer>().ToList();
+            return await session.Query<Offer>().ToListAsync();
         }
 
         public void Add(Offer offer)
@@ -107,9 +108,9 @@ namespace SeparateModels.DataAccess.Marten
             this.session = session;
         }
 
-        public Policy WithNumber(string number)
+        public async Task<Policy> WithNumber(string number)
         {
-            return session.Query<Policy>().FirstOrDefault(p => p.Number == number);
+            return await session.Query<Policy>().FirstOrDefaultAsync(p => p.Number == number);
         }
 
         public void Add(Policy policy)
@@ -118,7 +119,7 @@ namespace SeparateModels.DataAccess.Marten
         }
 
         //TODO: get rid of it
-        public IList<Policy> Find(PolicyFilter filter)
+        public Task<IList<Policy>> Find(PolicyFilter filter)
         {
             throw new System.NotImplementedException();
         }

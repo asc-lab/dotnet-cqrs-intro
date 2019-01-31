@@ -17,7 +17,7 @@ namespace SeparateModels.Commands
 
         public async Task<ConfirmBuyAdditionalCoverResult> Handle(ConfirmBuyAdditionalCoverCommand command, CancellationToken cancellationToken)
         {
-            var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.ConfirmChanges(command.VersionToConfirmNumber);
             await dataStore.CommitChanges();
             return new ConfirmBuyAdditionalCoverResult

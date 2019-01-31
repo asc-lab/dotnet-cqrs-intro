@@ -9,6 +9,11 @@ namespace SeparateModels.Init
     {
         public static Offer StandardOneYearOCOfferValidUntil(Product product, string number, DateTime validityEnd)
         {
+            var coverPrices = new Dictionary<Cover, Money>()
+            {
+                {product.Covers.WithCode("OC"), Money.Euro(500)}
+            };
+            
             return new Offer
             (
                 Guid.NewGuid(), 
@@ -20,10 +25,7 @@ namespace SeparateModels.Init
                 TimeSpan.FromDays(365), 
                 Money.Euro(500),
                 validityEnd.AddDays(-30),
-                new Dictionary<Cover, Money>()
-                {
-                    {product.Covers.WithCode("OC"), Money.Euro(500) }
-                }
+                coverPrices
             );
         }
 

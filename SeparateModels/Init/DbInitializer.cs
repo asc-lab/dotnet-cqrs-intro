@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using SeparateModels.Domain;
@@ -13,28 +15,45 @@ namespace SeparateModels.Init
             this.dataStore = dataStore;
         }
 
-        public void Seed()
+        public async Task Seed()
         {
-            dataStore.Products.Add(Products.StandardCarInsurance());
-            dataStore.CommitChanges();
+            var product = await dataStore.Products.WithCode("STD_CAR_INSURANCE");
+            if (product == null)
+            {
+                product = Products.StandardCarInsurance();
+                dataStore.Products.Add(product);
+                await dataStore.CommitChanges();
+            }
 
-            var product = dataStore.Products.WithCode("STD_CAR_INSURANCE");
+            
+            var offer = await dataStore.Offers.WithNumber("OFF-001");
+            if (offer == null)
+            {
+                dataStore.Offers.Add(
+                    Offers.StandardOneYearOCOfferValidUntil(product, "OFF-001", SysTime.CurrentTime.AddDays(15)));
+            }
+        
+            
+            var offer2 = await dataStore.Offers.WithNumber("OFF-002");
+            if (offer2 == null)
+            {
+                dataStore.Offers.Add(
+                    Offers.StandardOneYearOCOfferValidUntil(product, "OFF-002", SysTime.CurrentTime.AddDays(-3)));
+            }
 
-            dataStore.Offers.Add(Offers.StandardOneYearOCOfferValidUntil(product, "OFF-001", SysTime.CurrentTime.AddDays(15)));
-            dataStore.Offers.Add(Offers.StandardOneYearOCOfferValidUntil(product, "OFF-002", SysTime.CurrentTime.AddDays(-3)));
-            dataStore.CommitChanges();
+            await dataStore.CommitChanges();
             
         }
     }
     
     public static class ApplicationBuilderExtensions
     {
-        public static void UseDbInitializer(this IApplicationBuilder app)
+        public static async Task UseDbInitializer(this IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var dataStore = scope.ServiceProvider.GetService<IDataStore>();
-                new DbInitializer(dataStore).Seed();
+                await new DbInitializer(dataStore).Seed();
             }
         }
     }

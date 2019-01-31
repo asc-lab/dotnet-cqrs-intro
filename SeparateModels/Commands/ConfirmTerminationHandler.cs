@@ -17,7 +17,7 @@ namespace SeparateModels.Commands
 
         public async Task<ConfirmTerminationResult> Handle(ConfirmTerminationCommand command, CancellationToken cancellationToken)
         {
-            var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.ConfirmChanges(command.VersionToConfirmNumber);
             await dataStore.CommitChanges();
             return new ConfirmTerminationResult

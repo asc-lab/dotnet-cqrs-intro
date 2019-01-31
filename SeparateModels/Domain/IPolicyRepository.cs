@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SeparateModels.Domain
 {
     public interface IPolicyRepository
     {
-        Policy WithNumber(string number);
+        Task<Policy> WithNumber(string number);
 
         void Add(Policy policy);
 
-        IList<Policy> Find(PolicyFilter filter);
+        Task<IList<Policy>> Find(PolicyFilter filter);
     }
 
     public class PolicyFilter

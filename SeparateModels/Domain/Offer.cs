@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using NodaMoney;
 
 namespace SeparateModels.Domain
@@ -17,7 +18,9 @@ namespace SeparateModels.Domain
         public Money TotalCost { get; private set; }
         public DateTime CreationDate { get; private set; }
         public DateTime ValidityDate => CreationDate.AddDays(30);
+        [JsonProperty]
         private List<CoverPrice> covers = new List<CoverPrice>();
+        [JsonIgnore]
         public IEnumerable<CoverPrice> Covers => covers.AsReadOnly();
 
         public Offer
@@ -50,8 +53,8 @@ namespace SeparateModels.Domain
             }
         }
 
-        //required by EF
-        protected Offer()
+        //required by JSON
+        public Offer()
         {
         }
 

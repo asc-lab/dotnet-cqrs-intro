@@ -19,7 +19,7 @@ namespace SeparateModels.Commands
 
         public async Task<TerminatePolicyResult> Handle(TerminatePolicyCommand command, CancellationToken cancellationToken)
         {
-            var policy = dataStore.Policies.WithNumber(command.PolicyNumber);
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
             policy.TerminatePolicy(command.TerminationDate);
             await dataStore.CommitChanges();
             return new TerminatePolicyResult

@@ -20,7 +20,7 @@ namespace SeparateModels.Commands
 
         public async Task<BuyAdditionalCoverResult> Handle(BuyAdditionalCoverCommand request, CancellationToken cancellationToken)
         {
-            var policy = dataStore.Policies.WithNumber(request.PolicyNumber);
+            var policy = await dataStore.Policies.WithNumber(request.PolicyNumber);
             var newCover = policy.Product.Covers.WithCode(request.NewCoverCode);
             policy.ExtendCoverage
             (

@@ -17,7 +17,7 @@ namespace SeparateModels.Queries
             this.dataStore = dataStore;
         }
 
-        public Task<List<PolicyInfoDto>> Handle(FindPoliciesQuery query, CancellationToken cancellationToken)
+        public async Task<List<PolicyInfoDto>> Handle(FindPoliciesQuery query, CancellationToken cancellationToken)
         {
             var policyFilter = new PolicyFilter
             (
@@ -29,12 +29,11 @@ namespace SeparateModels.Queries
                 query.CarPlateNumber
             );
 
-            var results = dataStore.Policies.Find(policyFilter);
+            var results = await dataStore.Policies.Find(policyFilter);
 
-            return Task.FromResult(results
+            return results
                 .Select(p => PolicyInfoDtoAssembler.AssemblePolicyInfoDto(p, p.CurrentVersion))
-                .ToList()
-            );
+                .ToList();
         }
     }
 }

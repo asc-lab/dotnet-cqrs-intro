@@ -17,7 +17,7 @@ namespace SeparateModels.Commands
 
         public async Task<CreatePolicyResult> Handle(CreatePolicyCommand command, CancellationToken cancellationToken)
         {
-            var offer = dataStore.Offers.WithNumber(command.OfferNumber);
+            var offer = await dataStore.Offers.WithNumber(command.OfferNumber);
             var policy = Policy.ConvertOffer(offer, Guid.NewGuid().ToString(), command.PurchaseDate,
                 command.PolicyStartDate);
             dataStore.Policies.Add(policy);
