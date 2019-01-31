@@ -10,7 +10,7 @@ namespace SeparateModels.Domain
         public Guid Id { get; private set; }
         public string Number { get; private set; }
         public OfferStatus Status { get; private set; }
-        public Product Product { get; private set; }
+        public string ProductCode { get; private set; }
         public Person Customer { get; private set; }
         public Car Car { get; private set; }
         public Person Driver { get; private set; }
@@ -40,7 +40,7 @@ namespace SeparateModels.Domain
             Id = id;
             Number = number;
             Status = OfferStatus.New;
-            Product = product;
+            ProductCode = product.Code;
             Customer = customer;
             Driver = driver;
             Car = car;
@@ -98,14 +98,14 @@ namespace SeparateModels.Domain
     public class CoverPrice
     {
         public Guid Id { get; private set; }
-        public Cover Cover { get; private set; }
+        public string CoverCode { get; private set; }
         public Money Price { get; private set; }
         public TimeSpan CoverPeriod { get; private set; }
 
         public CoverPrice(Guid id, Cover cover, Money price, TimeSpan coverPeriod)
         {
             Id = id;
-            Cover = cover;
+            CoverCode = cover.Code;
             Price = price;
             CoverPeriod = coverPeriod;
         }
@@ -113,7 +113,7 @@ namespace SeparateModels.Domain
         public CoverPrice(Cover cover, Money price, TimeSpan coverPeriod)
         {
             Id = Guid.NewGuid();
-            Cover = cover;
+            CoverCode = cover.Code;
             Price = price;
             CoverPeriod = coverPeriod;
         }

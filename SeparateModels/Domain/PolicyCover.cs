@@ -6,7 +6,7 @@ namespace SeparateModels.Domain
     public class PolicyCover
     {
         public Guid Id { get; private set; }
-        public Cover Cover { get; private set; }
+        public string CoverCode { get; private set; }
         public ValidityPeriod CoverPeriod { get; private set; }
         
         public Money Price { get; private set; }
@@ -14,10 +14,10 @@ namespace SeparateModels.Domain
         
         public Money Amount { get; private set; }
 
-        public PolicyCover(Guid id, Cover cover, ValidityPeriod coverPeriod, Money price, TimeSpan pricePeriod)
+        public PolicyCover(Guid id, string coverCode, ValidityPeriod coverPeriod, Money price, TimeSpan pricePeriod)
         {
             Id = id;
-            Cover = cover;
+            CoverCode = coverCode;
             CoverPeriod = coverPeriod;
             Price = price;
             PricePeriod = pricePeriod;

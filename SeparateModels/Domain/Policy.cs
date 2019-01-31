@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace SeparateModels.Domain
 {
@@ -8,8 +9,10 @@ namespace SeparateModels.Domain
     {
         public Guid Id { get; private set; }
         public string Number { get; private set; }
-        public Product Product { get; private set; }
+        public string ProductCode { get; private set; }
+        [JsonProperty]
         private List<PolicyVersion> versions = new List<PolicyVersion>();
+        [JsonIgnore]
         public IEnumerable<PolicyVersion> Versions => versions.AsReadOnly();
         public DateTime PurchaseDate { get; private set; }
         public PolicyVersion CurrentVersion { get; private set; }
@@ -43,7 +46,7 @@ namespace SeparateModels.Domain
             {
                 Id = Guid.NewGuid(),
                 Number = PolicyNumber,
-                Product = offer.Product,
+                ProductCode = offer.ProductCode,
                 PurchaseDate = purchaseDate
             };
 

@@ -61,22 +61,22 @@ namespace SeparateModels.Domain
             var newCovers =
                 newVersion
                     .Covers
-                    .Where(c => oldVersion.Covers.All(oldC => oldC.Cover.Code != c.Cover.Code));
+                    .Where(c => oldVersion.Covers.All(oldC => oldC.CoverCode != c.CoverCode));
 
             foreach (var newCover in newCovers)
             {
-                coverChanges.Add($"Cover added {newCover.Cover.Code} {newCover.CoverPeriod.ValidFrom.ToShortDateString()} {newCover.CoverPeriod.ValidTo.ToShortDateString()} {newCover.Amount}");
+                coverChanges.Add($"Cover added {newCover.CoverCode} {newCover.CoverPeriod.ValidFrom.ToShortDateString()} {newCover.CoverPeriod.ValidTo.ToShortDateString()} {newCover.Amount}");
             }
             
             //look for covers only in old
             var oldCovers =
                 oldVersion
                     .Covers
-                    .Where(c => newVersion.Covers.All(newC => newC.Cover.Code != c.Cover.Code));
+                    .Where(c => newVersion.Covers.All(newC => newC.CoverCode != c.CoverCode));
 
             foreach (var newCover in newCovers)
             {
-                coverChanges.Add($"Cover removed {newCover.Cover.Code} {newCover.CoverPeriod.ValidFrom.ToShortDateString()} {newCover.CoverPeriod.ValidTo.ToShortDateString()} {newCover.Amount}");
+                coverChanges.Add($"Cover removed {newCover.CoverCode} {newCover.CoverPeriod.ValidFrom.ToShortDateString()} {newCover.CoverPeriod.ValidTo.ToShortDateString()} {newCover.Amount}");
             }
 
 

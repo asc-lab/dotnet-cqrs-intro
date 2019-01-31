@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using NodaMoney;
 
 namespace SeparateModels.Domain
@@ -18,7 +20,9 @@ namespace SeparateModels.Domain
         public Person Driver { get; private set; }
         public Car Car { get; private set; }
         public Money TotalPremium { get; private set; }
+        [JsonProperty]
         private List<PolicyCover> covers = new List<PolicyCover>();
+        [JsonIgnore]
         public IEnumerable<PolicyCover> Covers => covers.AsReadOnly();
 
         public PolicyVersion
@@ -92,7 +96,7 @@ namespace SeparateModels.Domain
             var cover = new PolicyCover
             (
                 Guid.NewGuid(),
-                coverPrice.Cover,
+                coverPrice.CoverCode,
                 ValidityPeriod.Between(coverStart, coverEnd),
                 coverPrice.Price,
                 coverPrice.CoverPeriod

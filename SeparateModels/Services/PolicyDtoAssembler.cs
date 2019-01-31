@@ -57,7 +57,7 @@ namespace SeparateModels.Services
         {
             return new CoverDto
             {
-                Code = policyCover.Cover.Code,
+                Code = policyCover.CoverCode,
                 CoverFrom = policyCover.CoverPeriod.ValidFrom,
                 CoverTo = policyCover.CoverPeriod.ValidTo,
                 PremiumAmount = policyCover.Amount.Amount

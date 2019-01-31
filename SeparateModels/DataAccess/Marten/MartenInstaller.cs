@@ -21,9 +21,9 @@ namespace SeparateModels.DataAccess.Marten
                 _.Connection(cn);
                 _.Serializer(CustomizeJsonSerializer());
 
-                _.Schema.For<Policy>().Duplicate(t => t.Number,pgType: "varchar(50)", configure: idx => idx.IsUnique = true);
-                _.Schema.For<Offer>().Duplicate(t => t.Number,pgType: "varchar(50)", configure: idx => idx.IsUnique = true);
-                _.Schema.For<Product>().Duplicate(t => t.Code,pgType: "varchar(50)", configure: idx => idx.IsUnique = true);
+                _.Schema.For<Policy>().DocumentAlias("policy_agg").Duplicate(t => t.Number,pgType: "varchar(50)", configure: idx => idx.IsUnique = true);
+                _.Schema.For<Offer>().DocumentAlias("offer_agg").Duplicate(t => t.Number,pgType: "varchar(50)", configure: idx => idx.IsUnique = true);
+                _.Schema.For<Product>().DocumentAlias("product_agg").Duplicate(t => t.Code,pgType: "varchar(50)", configure: idx => idx.IsUnique = true);
             });
         }
 
