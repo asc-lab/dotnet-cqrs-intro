@@ -1,6 +1,6 @@
 using System;
 
-namespace SeparateModels.Services
+namespace SeparateModels.ReadModels
 {
     public class PolicyInfoDto
     {

@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SeparateModels.Domain;
+using SeparateModels.ReadModels;
 using SeparateModels.Services;
 
 namespace SeparateModels.Queries

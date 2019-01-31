@@ -1,6 +1,6 @@
 using SeparateModels.Domain;
 
-namespace SeparateModels.Services
+namespace SeparateModels.ReadModels
 {
     public class PolicyInfoDtoAssembler
     {

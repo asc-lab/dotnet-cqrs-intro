@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SeparateModels.Services
+namespace SeparateModels.ReadModels
 {
     public class PolicyDto
     {

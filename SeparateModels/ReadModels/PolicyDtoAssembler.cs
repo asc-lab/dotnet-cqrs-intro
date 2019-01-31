@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SeparateModels.Domain;
 
-namespace SeparateModels.Services
+namespace SeparateModels.ReadModels
 {
     public static class PolicyDtoAssembler
     {

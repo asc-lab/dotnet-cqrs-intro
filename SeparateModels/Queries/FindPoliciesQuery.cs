@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MediatR;
+using SeparateModels.ReadModels;
 using SeparateModels.Services;
 
 namespace SeparateModels.Queries
