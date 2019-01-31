@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapper;
 using MediatR;
+using Npgsql;
 using SeparateModels.Domain;
 using SeparateModels.ReadModels;
 using SeparateModels.Services;
@@ -11,14 +13,11 @@ namespace SeparateModels.Queries
 {
     public class FindPoliciesHandler : IRequestHandler<FindPoliciesQuery, List<PolicyInfoDto>>
     {
-        private readonly IDataStore dataStore;
-    
-        public FindPoliciesHandler(IDataStore dataStore)
+        public FindPoliciesHandler()
         {
-            this.dataStore = dataStore;
         }
 
-        public async Task<List<PolicyInfoDto>> Handle(FindPoliciesQuery query, CancellationToken cancellationToken)
+        public Task<List<PolicyInfoDto>> Handle(FindPoliciesQuery query, CancellationToken cancellationToken)
         {
             var policyFilter = new PolicyFilter
             (
@@ -30,11 +29,22 @@ namespace SeparateModels.Queries
                 query.CarPlateNumber
             );
 
-            var results = await dataStore.Policies.Find(policyFilter);
+            using (var cn =
+                new NpgsqlConnection(
+                    "User ID=lab_user;Password=lab_pass;Database=lab_cqrs_dotnet_demo;Host=localhost;Port=5432"))
+            {
+                return Task.FromResult(cn.Query<PolicyInfoDto>("select " +
+                                                               "policy_id as PolicyId," +
+                                                               "policy_number as PolicyNumber," +
+                                                               "cover_from as CoverFrom," +
+                                                               "cover_to as CoverTo," +
+                                                               "vehicle as Vehicle," +
+                                                               "policy_holder as PolicyHolder," +
+                                                               "total_premium as TotalPremiumAmount " +
+                                                               "from public.policy_info_view").ToList());
+            }
 
-            return results
-                .Select(p => PolicyInfoDtoAssembler.AssemblePolicyInfoDto(p, p.CurrentVersion))
-                .ToList();
+            
         }
     }
 }

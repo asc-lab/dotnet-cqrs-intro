@@ -25,42 +25,42 @@ namespace SeparateModels.Controllers
             return Ok(result);
         }
         
-        [HttpPost("/BuyAdditionalCover")]
+        [HttpPost("BuyAdditionalCover")]
         public async Task<IActionResult> BuyAdditionalCover([FromBody] BuyAdditionalCoverCommand cmd)
         {
             var result = await mediator.Send(cmd);
             return Ok(result);
         }
         
-        [HttpPost("/ConfirmBuyAdditionalCover")]
+        [HttpPost("ConfirmBuyAdditionalCover")]
         public async Task<IActionResult> Post([FromBody] ConfirmBuyAdditionalCoverCommand cmd)
         {
             var result = await mediator.Send(cmd);
             return Ok(result);
         }
         
-        [HttpPost("/Terminate")]
+        [HttpPost("Terminate")]
         public async Task<IActionResult> Terminate([FromBody] TerminatePolicyCommand cmd)
         {
             var result = await mediator.Send(cmd);
             return Ok(result);
         }
         
-        [HttpPost("/ConfirmTermination")]
+        [HttpPost("ConfirmTermination")]
         public async Task<IActionResult> ConfirmTermination([FromBody] ConfirmTerminationCommand cmd)
         {
             var result = await mediator.Send(cmd);
             return Ok(result);
         }
         
-        [HttpPost("/CancelLastAnnex")]
+        [HttpPost("CancelLastAnnex")]
         public async Task<IActionResult> CancelLastAnnex([FromBody] CancelLastAnnexCommand cmd)
         {
             var result = await mediator.Send(cmd);
             return Ok(result);
         }
 
-        [HttpGet("/{policyNumber}")]
+        [HttpGet("{policyNumber}")]
         public async Task<IActionResult> GetPolicyDetails(string policyNumber)
         {
             var result = await mediator.Send(new GetPolicyDetailsQuery { PolicyNumber = policyNumber });
@@ -68,7 +68,7 @@ namespace SeparateModels.Controllers
         }
 
 
-        [HttpPost("/find")]
+        [HttpPost("find")]
         public async Task<IActionResult> Find([FromBody] FindPoliciesQuery query)
         {
             var result = await mediator.Send(query);
