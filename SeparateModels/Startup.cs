@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SeparateModels.DataAccess.Marten;
 using SeparateModels.Init;
 using SeparateModels.Installers;
+using SeparateModels.ReadModels;
 using SeparateModels.Services;
 
 namespace SeparateModels
@@ -26,8 +27,7 @@ namespace SeparateModels
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMediatR();
             services.AddMarten(Configuration.GetConnectionString("DefaultConnection"));
-            //services.AddEF(Configuration);
-            //services.AddScoped<PolicyService>();
+            services.AddReadModels(Configuration.GetConnectionString("DefaultConnection"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -118,10 +118,5 @@ namespace SeparateModels.DataAccess.Marten
             session.Insert(policy);
         }
 
-        //TODO: get rid of it
-        public Task<IList<Policy>> Find(PolicyFilter filter)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
