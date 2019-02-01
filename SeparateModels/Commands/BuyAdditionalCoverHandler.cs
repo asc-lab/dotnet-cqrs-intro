@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using MediatR;
 using Microsoft.EntityFrameworkCore.Storage;
 using NodaMoney;
@@ -20,22 +21,29 @@ namespace SeparateModels.Commands
 
         public async Task<BuyAdditionalCoverResult> Handle(BuyAdditionalCoverCommand request, CancellationToken cancellationToken)
         {
-            var policy = await dataStore.Policies.WithNumber(request.PolicyNumber);
-            var product = await dataStore.Products.WithCode(policy.ProductCode);
-            var newCover = product.Covers.WithCode(request.NewCoverCode);
-            policy.ExtendCoverage
-            (
-                request.EffectiveDateOfChange, 
-                new CoverPrice(newCover,Money.Euro(request.NewCoverPrice),request.NewCoverPriceUnit)
-            );
-            var newPolicyVersion = policy.Versions.Last();
-            await dataStore.CommitChanges();
-            
-            return new BuyAdditionalCoverResult
+            using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                PolicyNumber = policy.Number,
-                VersionWithAdditionalCoversNumber = newPolicyVersion.VersionNumber
-            };
+                var policy = await dataStore.Policies.WithNumber(request.PolicyNumber);
+                var product = await dataStore.Products.WithCode(policy.ProductCode);
+                var newCover = product.Covers.WithCode(request.NewCoverCode);
+
+                policy.ExtendCoverage
+                (
+                    request.EffectiveDateOfChange,
+                    new CoverPrice(newCover, Money.Euro(request.NewCoverPrice), request.NewCoverPriceUnit)
+                );
+                var newPolicyVersion = policy.Versions.Last();
+
+                await dataStore.CommitChanges();
+
+                tx.Complete();
+                
+                return new BuyAdditionalCoverResult
+                {
+                    PolicyNumber = policy.Number,
+                    VersionWithAdditionalCoversNumber = newPolicyVersion.VersionNumber
+                };
+            }
         }
     }
 }

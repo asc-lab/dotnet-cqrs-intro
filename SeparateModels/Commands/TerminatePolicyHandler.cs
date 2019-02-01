@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using SeparateModels.Domain;
@@ -19,14 +20,21 @@ namespace SeparateModels.Commands
 
         public async Task<TerminatePolicyResult> Handle(TerminatePolicyCommand command, CancellationToken cancellationToken)
         {
-            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
-            policy.TerminatePolicy(command.TerminationDate);
-            await dataStore.CommitChanges();
-            return new TerminatePolicyResult
+            using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                PolicyNumber = policy.Number,
-                VersionWithTerminationNumber = policy.Versions.Last().VersionNumber
-            };
+                var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
+                policy.TerminatePolicy(command.TerminationDate);
+                
+                await dataStore.CommitChanges();
+                
+                tx.Complete();
+                
+                return new TerminatePolicyResult
+                {
+                    PolicyNumber = policy.Number,
+                    VersionWithTerminationNumber = policy.Versions.Last().VersionNumber
+                };
+            }
         }
     }
 }
