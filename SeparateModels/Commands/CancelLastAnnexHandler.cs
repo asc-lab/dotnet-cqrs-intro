@@ -26,7 +26,7 @@ namespace SeparateModels.Commands
             
             await dataStore.CommitChanges();
 
-            await mediator.Publish(new PolicyAnnexCancelled(policy, lastAnnex));
+            await mediator.Publish(new PolicyAnnexCancelled(policy, lastAnnex, policy.Versions.LatestActive()));
             
             return new CancelLastAnnexResult
             {

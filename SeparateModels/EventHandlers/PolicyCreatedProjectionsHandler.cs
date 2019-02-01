@@ -10,7 +10,8 @@ using SeparateModels.Services;
 
 namespace SeparateModels.EventHandlers
 {
-    public class PolicyCreatedProjectionsHandler : INotificationHandler<PolicyCreated>
+    public class PolicyCreatedProjectionsHandler : 
+        INotificationHandler<PolicyCreated>
     {
         private readonly PolicyInfoDtoProjection policyInfoDtoProjection;
 

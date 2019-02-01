@@ -20,7 +20,7 @@ namespace SeparateModels.DataAccess.Marten
         
         public MartenDataStore(IDocumentStore documentStore)
         {
-            session = documentStore.LightweightSession();
+            session = documentStore.DirtyTrackedSession();
             Products = new ProductRepository(session);
             Offers = new OfferRepository(session);
             Policies = new PolicyRepository(session);

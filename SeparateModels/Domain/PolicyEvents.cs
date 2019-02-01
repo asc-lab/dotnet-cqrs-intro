@@ -39,11 +39,16 @@ namespace SeparateModels.Domain
     public class PolicyAnnexCancelled : INotification
     {
         public Policy Policy { get; }
+        public PolicyVersion CancelledAnnexVersion { get; }
         public PolicyVersion CurrentVersionAfterAnnexCancellation { get; }
 
-        public PolicyAnnexCancelled(Policy policy, PolicyVersion currentVersionAfterAnnexCancellation)
+        public PolicyAnnexCancelled(
+            Policy policy, 
+            PolicyVersion cancelledAnnexVersion,
+            PolicyVersion currentVersionAfterAnnexCancellation)
         {
             Policy = policy;
+            CancelledAnnexVersion = cancelledAnnexVersion;
             CurrentVersionAfterAnnexCancellation = currentVersionAfterAnnexCancellation;
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using Dapper;
 using Npgsql;
 using SeparateModels.Domain;
@@ -40,6 +41,33 @@ namespace SeparateModels.ReadModels
 
         public void UpdatePolicyInfoDto(Policy policy, PolicyVersion currentVersion)
         {
+            using (var cn = new NpgsqlConnection(cnString))
+            {
+                var policyInfo = new PolicyInfoDto
+                {
+                    PolicyId = policy.Id,
+                    CoverFrom = currentVersion.CoverPeriod.ValidFrom,
+                    CoverTo = currentVersion.CoverPeriod.ValidTo,
+                    PolicyHolder = $"{currentVersion.PolicyHolder.LastName} {currentVersion.PolicyHolder.FirstName}",
+                    Vehicle = $"{currentVersion.Car.PlateNumber} {currentVersion.Car.Make}",
+                    TotalPremiumAmount = currentVersion.TotalPremium.Amount
+                };
+
+                
+                cn.Open();
+                cn.Execute(
+                    "UPDATE public.policy_info_view " +
+                    "SET " +
+                    "cover_from = @CoverFrom, " +
+                    "cover_to = @CoverTo, " +
+                    "vehicle = @Vehicle, " +
+                    "policy_holder = @PolicyHolder, " +
+                    "total_premium = @TotalPremiumAmount " +
+                    "WHERE policy_id = @PolicyId ",
+                    policyInfo);
+          
+            }
         }
+        
     }
 }
