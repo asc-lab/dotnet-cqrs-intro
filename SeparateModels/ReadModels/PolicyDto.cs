@@ -3,19 +3,11 @@ using System.Collections.Generic;
 
 namespace SeparateModels.ReadModels
 {
-    public class PolicyDto
-    {
-        public Guid PolicyId { get; set; }
-        
-        public string PolicyNumber { get; set; }
-        
-        public PolicyVersionDto CurrentVersion { get; set; }
-        
-        public List<PolicyVersionDto> Versions { get; set; }
-    }
-
     public class PolicyVersionDto
     {
+        public Guid PolicyId { get; set; }
+        public string PolicyNumber { get; set; }
+        public string ProductCode { get; set; }
         public int VersionNumber { get; set; }
         public string VersionStatus { get; set; }
         public string PolicyStatus { get; set; }

@@ -15,7 +15,6 @@ namespace SeparateModels.Domain
         [JsonIgnore]
         public IEnumerable<PolicyVersion> Versions => versions.AsReadOnly();
         public DateTime PurchaseDate { get; private set; }
-        public PolicyVersion CurrentVersion { get; private set; }
 
         public static Policy ConvertOffer(Offer offer, string PolicyNumber, DateTime purchaseDate, DateTime policyStartDate)
         {
@@ -129,9 +128,6 @@ namespace SeparateModels.Domain
             }
 
             lastActiveVer.Cancel();
-
-            //WARNING: Added to support queries 
-            CurrentVersion = Versions.LatestActive();
         }
 
         public void ConfirmChanges(int versionToConfirmNumber)
@@ -145,9 +141,6 @@ namespace SeparateModels.Domain
             }
 
             versionToConfirm.Confirm();
-            
-            //WARNING: Added to support queries 
-            CurrentVersion = Versions.LatestActive();
         }
 
         private void AddFirstVersion(Offer offer, DateTime purchaseDate, DateTime policyStartDate)

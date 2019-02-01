@@ -7,7 +7,7 @@ using SeparateModels.Services;
 
 namespace SeparateModels.Queries
 {
-    public class GetPolicyDetailsHandler : IRequestHandler<GetPolicyDetailsQuery, PolicyDto>
+    public class GetPolicyDetailsHandler : IRequestHandler<GetPolicyDetailsQuery, PolicyVersionDto>
     {
         private readonly IDataStore dataStore;
 
@@ -16,11 +16,9 @@ namespace SeparateModels.Queries
             this.dataStore = dataStore;
         }
 
-        public async Task<PolicyDto> Handle(GetPolicyDetailsQuery query, CancellationToken cancellationToken)
+        public Task<PolicyVersionDto> Handle(GetPolicyDetailsQuery query, CancellationToken cancellationToken)
         {
-            var policy = await dataStore.Policies.WithNumber(query.PolicyNumber);
-            
-            return policy!=null ? PolicyDtoAssembler.AssemblePolicyDto(policy) : null;
+            return Task.FromResult(new PolicyVersionDto());
         }
     }
 }

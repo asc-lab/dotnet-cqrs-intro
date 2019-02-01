@@ -4,26 +4,15 @@ using SeparateModels.Domain;
 
 namespace SeparateModels.ReadModels
 {
-    public static class PolicyDtoAssembler
-    {
-        public static PolicyDto AssemblePolicyDto(Policy policy)
-        {
-            return new PolicyDto
-            {
-                PolicyId = policy.Id,
-                PolicyNumber = policy.Number,
-                CurrentVersion = PolicyVersionDtoAssembler.AssemblePolicyVersionDto(policy, policy.CurrentVersion),
-                Versions = policy.Versions.Select(v => PolicyVersionDtoAssembler.AssemblePolicyVersionDto(policy, v)).ToList()
-            };
-        }
-    }
-
     public static class PolicyVersionDtoAssembler
     {
         public static PolicyVersionDto AssemblePolicyVersionDto(Policy policy, PolicyVersion version)
         {
             return new PolicyVersionDto
             {
+                PolicyId = policy.Id,
+                PolicyNumber = policy.Number,
+                ProductCode = policy.ProductCode,
                 VersionNumber = version.VersionNumber,
                 VersionStatus = version.VersionStatus.ToString(),
                 PolicyStatus = version.PolicyStatus.ToString(),

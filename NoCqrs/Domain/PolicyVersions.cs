@@ -10,7 +10,7 @@ namespace NoCqrs.Domain
         public static PolicyVersion EffectiveAtDate(this IEnumerable<PolicyVersion> versions, DateTime effectiveDate)
         {
             return versions?
-                .Where(v => v.IsEffectiveOn(effectiveDate) && !v.IsDraft())
+                .Where(v => v.IsEffectiveOn(effectiveDate) && v.IsActive())
                 .OrderByDescending(v => v.VersionNumber)
                 .FirstOrDefault();
         }
