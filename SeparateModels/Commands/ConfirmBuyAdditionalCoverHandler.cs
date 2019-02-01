@@ -20,23 +20,18 @@ namespace SeparateModels.Commands
 
         public async Task<ConfirmBuyAdditionalCoverResult> Handle(ConfirmBuyAdditionalCoverCommand command, CancellationToken cancellationToken)
         {
-            using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
+            policy.ConfirmChanges(command.VersionToConfirmNumber);
+            
+            await dataStore.CommitChanges();
+            
+            await mediator.Publish(new PolicyAnnexed(policy, policy.Versions.WithNumber(command.VersionToConfirmNumber)));
+              
+            return new ConfirmBuyAdditionalCoverResult
             {
-                var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
-                policy.ConfirmChanges(command.VersionToConfirmNumber);
-                
-                await dataStore.CommitChanges();
-                
-                await mediator.Publish(new PolicyAnnexed(policy, policy.Versions.WithNumber(command.VersionToConfirmNumber)));
-                
-                tx.Complete();
-                
-                return new ConfirmBuyAdditionalCoverResult
-                {
-                    PolicyNumber = policy.Number,
-                    VersionConfirmed = policy.Versions.LatestActive().VersionNumber
-                };
-            }
+                PolicyNumber = policy.Number,
+                VersionConfirmed = policy.Versions.LatestActive().VersionNumber
+            };
         }
     }
 }

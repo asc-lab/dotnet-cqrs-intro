@@ -20,24 +20,20 @@ namespace SeparateModels.Commands
 
         public async Task<CreatePolicyResult> Handle(CreatePolicyCommand command, CancellationToken cancellationToken)
         {
-            using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            var offer = await dataStore.Offers.WithNumber(command.OfferNumber);
+            var policy = Policy.ConvertOffer(offer, Guid.NewGuid().ToString(), command.PurchaseDate,
+                command.PolicyStartDate);
+
+            dataStore.Policies.Add(policy);
+            await dataStore.CommitChanges();
+
+            await mediator.Publish(new PolicyCreated(policy));
+            
+            return new CreatePolicyResult
             {
-                var offer = await dataStore.Offers.WithNumber(command.OfferNumber);
-                var policy = Policy.ConvertOffer(offer, Guid.NewGuid().ToString(), command.PurchaseDate,
-                    command.PolicyStartDate);
-
-                dataStore.Policies.Add(policy);
-                await dataStore.CommitChanges();
-
-                await mediator.Publish(new PolicyCreated(policy));
-                
-                tx.Complete();
-
-                return new CreatePolicyResult
-                {
-                    PolicyNumber = policy.Number
-                };
-            }
+                PolicyNumber = policy.Number
+            };
+            
         }
     }
 }

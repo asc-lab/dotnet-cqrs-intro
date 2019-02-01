@@ -20,24 +20,19 @@ namespace SeparateModels.Commands
 
         public async Task<ConfirmTerminationResult> Handle(ConfirmTerminationCommand command, CancellationToken cancellationToken)
         {
-            using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
-                policy.ConfirmChanges(command.VersionToConfirmNumber);
-                
-                await dataStore.CommitChanges();
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
+            policy.ConfirmChanges(command.VersionToConfirmNumber);
+            
+            await dataStore.CommitChanges();
 
-                await mediator.Publish(new PolicyTerminated(policy,
-                    policy.Versions.WithNumber(command.VersionToConfirmNumber)));
-                
-                tx.Complete();
-                
-                return new ConfirmTerminationResult
-                {
-                    PolicyNumber = policy.Number,
-                    VersionConfirmed = policy.Versions.LatestActive().VersionNumber
-                };
-            }
+            await mediator.Publish(new PolicyTerminated(policy,
+                policy.Versions.WithNumber(command.VersionToConfirmNumber)));
+            
+            return new ConfirmTerminationResult
+            {
+                PolicyNumber = policy.Number,
+                VersionConfirmed = policy.Versions.LatestActive().VersionNumber
+            };
         }
     }
 }

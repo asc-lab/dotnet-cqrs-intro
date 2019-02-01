@@ -20,24 +20,19 @@ namespace SeparateModels.Commands
 
         public async Task<CancelLastAnnexResult> Handle(CancelLastAnnexCommand command, CancellationToken cancellationToken)
         {
-            using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            {
-                var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
-                var lastAnnex = policy.Versions.LatestActive();
-                policy.CancelLastAnnex();
-                
-                await dataStore.CommitChanges();
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
+            var lastAnnex = policy.Versions.LatestActive();
+            policy.CancelLastAnnex();
+            
+            await dataStore.CommitChanges();
 
-                await mediator.Publish(new PolicyAnnexCancelled(policy, lastAnnex));
-                
-                tx.Complete();
-                
-                return new CancelLastAnnexResult
-                {
-                    PolicyNumber = policy.Number,
-                    LastActiveVersionNumber = policy.Versions.LatestActive().VersionNumber
-                };    
-            }
+            await mediator.Publish(new PolicyAnnexCancelled(policy, lastAnnex));
+            
+            return new CancelLastAnnexResult
+            {
+                PolicyNumber = policy.Number,
+                LastActiveVersionNumber = policy.Versions.LatestActive().VersionNumber
+            }; 
         }
     }
 }

@@ -20,21 +20,16 @@ namespace SeparateModels.Commands
 
         public async Task<TerminatePolicyResult> Handle(TerminatePolicyCommand command, CancellationToken cancellationToken)
         {
-            using (var tx = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
+            policy.TerminatePolicy(command.TerminationDate);
+                
+            await dataStore.CommitChanges();
+                
+            return new TerminatePolicyResult
             {
-                var policy = await dataStore.Policies.WithNumber(command.PolicyNumber);
-                policy.TerminatePolicy(command.TerminationDate);
-                
-                await dataStore.CommitChanges();
-                
-                tx.Complete();
-                
-                return new TerminatePolicyResult
-                {
-                    PolicyNumber = policy.Number,
-                    VersionWithTerminationNumber = policy.Versions.Last().VersionNumber
-                };
-            }
+                PolicyNumber = policy.Number,
+                VersionWithTerminationNumber = policy.Versions.Last().VersionNumber
+            };
         }
     }
 }
