@@ -7,22 +7,23 @@ namespace SeparateModels.ReadModels
         public static IServiceCollection AddReadModels(this IServiceCollection services, string cnnString)
         {
             services
-                .AddPolicyInfoDtoProjection(cnnString)
-                .AddPolicyInfoDtoFinder(cnnString);
+                .AddProjections(cnnString)
+                .AddFinders(cnnString);
             
             return services;
         }
         
-        private static IServiceCollection AddPolicyInfoDtoProjection(this IServiceCollection services, string cnnString)
+        private static IServiceCollection AddProjections(this IServiceCollection services, string cnnString)
         {
             services.AddSingleton(new PolicyInfoDtoProjection(cnnString));
             services.AddSingleton(new PolicyVersionDtoProjection(cnnString));
             return services;
         }
         
-        private static IServiceCollection AddPolicyInfoDtoFinder(this IServiceCollection services, string cnnString)
+        private static IServiceCollection AddFinders(this IServiceCollection services, string cnnString)
         {
             services.AddSingleton(new PolicyInfoDtoFinder(cnnString));
+            services.AddSingleton(new PolicyVersionDtoFinder(cnnString));
             return services;
         }
     }

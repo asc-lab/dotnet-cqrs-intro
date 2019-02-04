@@ -60,10 +60,17 @@ namespace SeparateModels.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{policyNumber}")]
-        public async Task<IActionResult> GetPolicyDetails(string policyNumber)
+        [HttpGet("{policyNumber}/versions")]
+        public async Task<IActionResult> GetPolicyVersionsList(string policyNumber)
         {
-            var result = await mediator.Send(new GetPolicyDetailsQuery { PolicyNumber = policyNumber });
+            var result = await mediator.Send(new GetPolicyVersionsListQuery { PolicyNumber = policyNumber });
+            return Ok(result);
+        }
+        
+        [HttpGet("{policyNumber}/versions/{versionNumber}")]
+        public async Task<IActionResult> GetPolicyVersionDetails(string policyNumber, int versionNumber)
+        {
+            var result = await mediator.Send(new GetPolicyVersionDetailsQuery { PolicyNumber = policyNumber, VersionNumber = versionNumber});
             return Ok(result);
         }
 
