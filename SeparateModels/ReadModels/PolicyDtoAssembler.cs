@@ -10,6 +10,7 @@ namespace SeparateModels.ReadModels
         {
             return new PolicyVersionDto
             {
+                Id = version.Id,
                 PolicyId = policy.Id,
                 PolicyNumber = policy.Number,
                 ProductCode = policy.ProductCode,
@@ -46,6 +47,7 @@ namespace SeparateModels.ReadModels
         {
             return new CoverDto
             {
+                Id = policyCover.Id,
                 Code = policyCover.CoverCode,
                 CoverFrom = policyCover.CoverPeriod.ValidFrom,
                 CoverTo = policyCover.CoverPeriod.ValidTo,

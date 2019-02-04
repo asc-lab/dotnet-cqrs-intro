@@ -5,6 +5,7 @@ namespace SeparateModels.ReadModels
 {
     public class PolicyVersionDto
     {
+        public Guid Id { get; set; }
         public Guid PolicyId { get; set; }
         public string PolicyNumber { get; set; }
         public string ProductCode { get; set; }
@@ -25,6 +26,7 @@ namespace SeparateModels.ReadModels
 
     public class CoverDto
     {
+        public Guid Id { get; set; }
         public string Code { get; set; }
         public DateTime CoverFrom { get; set; }
         public DateTime CoverTo { get; set; }

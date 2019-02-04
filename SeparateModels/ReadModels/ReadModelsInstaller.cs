@@ -16,6 +16,7 @@ namespace SeparateModels.ReadModels
         private static IServiceCollection AddPolicyInfoDtoProjection(this IServiceCollection services, string cnnString)
         {
             services.AddSingleton(new PolicyInfoDtoProjection(cnnString));
+            services.AddSingleton(new PolicyVersionDtoProjection(cnnString));
             return services;
         }
         

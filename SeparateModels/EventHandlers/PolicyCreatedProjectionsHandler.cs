@@ -14,15 +14,19 @@ namespace SeparateModels.EventHandlers
         INotificationHandler<PolicyCreated>
     {
         private readonly PolicyInfoDtoProjection policyInfoDtoProjection;
+        private readonly PolicyVersionDtoProjection policyVersionDtoProjection;
 
-        public PolicyCreatedProjectionsHandler(PolicyInfoDtoProjection policyInfoDtoProjection)
+        public PolicyCreatedProjectionsHandler(PolicyInfoDtoProjection policyInfoDtoProjection, PolicyVersionDtoProjection policyVersionDtoProjection)
         {
             this.policyInfoDtoProjection = policyInfoDtoProjection;
+            this.policyVersionDtoProjection = policyVersionDtoProjection;
         }
 
         public Task Handle(PolicyCreated @event, CancellationToken cancellationToken)
         {
             policyInfoDtoProjection.CreatePolicyInfoDto(@event.NewPolicy);
+            
+            policyVersionDtoProjection.CreatePolicyVersionDtoProjection(@event.NewPolicy, @event.NewPolicy.Versions.WithNumber(1));
             
             return Task.CompletedTask;
         }
