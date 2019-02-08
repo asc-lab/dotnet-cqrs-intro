@@ -12,7 +12,6 @@ namespace CqrsWithEs.Domain
     public class Policy : AggregateRoot
     {
         public string PolicyNumber { get; private set; }
-        public  PolicyStatus PolicyStatus { get; private set; }
         private List<PolicyVersion> versions = new List<PolicyVersion>();
         public IList<PolicyVersion> Versions => versions.AsReadOnly();
 
@@ -72,7 +71,6 @@ namespace CqrsWithEs.Domain
         private void Apply(InitialPolicyVersionCreated @event)
         {
             PolicyNumber = @event.PolicyNumber;
-            PolicyStatus = @event.PolicyStatus;
             versions.Add(
                 new PolicyVersion
                 (
@@ -144,8 +142,76 @@ namespace CqrsWithEs.Domain
             );
             versions.Add(draft);
         }
+        
+        public void TerminatePolicy(DateTime effectiveDateOfChange)
+        {
+            if (Terminated())
+            {
+                throw new ApplicationException("Policy already terminated");
+            } 
+            
+            var versionAtDate = versions.EffectiveAt(effectiveDateOfChange);
 
-        private bool Terminated() => PolicyStatus == PolicyStatus.Terminated;
+            if (versionAtDate == null)
+            {
+                throw new ApplicationException("No active version at given date");    
+            }
+
+            if (!versionAtDate.CoversDate(effectiveDateOfChange))
+            {
+                throw new ApplicationException("Cannot terminate policy at given date as it is not withing cover period");    
+            }
+            
+            var newVersionNumber = versions.Count + 1;
+            var versionPeriod = ValidityPeriod.Between(effectiveDateOfChange, versionAtDate.CoverPeriod.ValidTo);
+            var coverPeriod = versionAtDate.CoverPeriod.EndOn(effectiveDateOfChange.AddDays(-1));
+            var terminatedCovers = versionAtDate.Covers
+                .Select(c => c.EndOn(effectiveDateOfChange.AddDays(-1)))
+                .ToList();
+
+            ApplyChange
+            (
+                new TerminalPolicyVersionCreated
+                (
+                    newVersionNumber,
+                    versionAtDate.VersionNumber,
+                    versionPeriod.ValidFrom,
+                    versionPeriod.ValidTo,
+                    coverPeriod.ValidFrom,
+                    coverPeriod.ValidTo,
+                    terminatedCovers
+                )
+            );
+        }
+
+        private void Apply(TerminalPolicyVersionCreated @event)
+        {
+            var versionPeriod = ValidityPeriod.Between(@event.VersionFrom, @event.VersionTo);
+            
+            var draft = new PolicyVersion
+            (
+                @event.VersionNumber,
+                PolicyStatus.Terminated,
+                PolicyVersionStatus.Draft,
+                ValidityPeriod.Between(@event.CoverFrom,@event.CoverTo),
+                versionPeriod,
+                @event.Covers
+                    .Select(c => 
+                        new PolicyCover
+                        (
+                            c.Code,
+                            ValidityPeriod.Between(c.CoverFrom,c.CoverTo),
+                            new UnitPrice(c.Price,c.PriceUnit)
+                        )
+                    )
+                    .ToList()
+            );
+            
+            versions.Add(draft);
+        }
+
+        private bool Terminated() => versions.Any(v =>
+            v.PolicyVersionStatus == PolicyVersionStatus.Active && v.PolicyStatus == PolicyStatus.Terminated);
     }
 
 
@@ -245,7 +311,17 @@ namespace CqrsWithEs.Domain
                 new UnitPrice(coverPrice.Price, coverPrice.CoverPeriod)
             );
         }
-        
+
+        public PolicyCover EndOn(DateTime lastDateOfCover)
+        {
+            return new PolicyCover
+            (
+                CoverCode,
+                CoverPeriod.EndOn(lastDateOfCover),
+                Price
+            );
+        }
+
         private Money CalculateAmount()
         {
             return decimal.Divide(CoverPeriod.Days, Price.PricePeriod.Days) * Price.Price;
