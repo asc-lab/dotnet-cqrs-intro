@@ -4,16 +4,24 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Permissions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Internal;
 using NodaMoney;
 
 namespace CqrsWithEs.Domain
 {
     public class Policy : AggregateRoot
     {
-        private string policyNumber;
-        private PolicyStatus policyStatus;
+        public string PolicyNumber { get; private set; }
+        public  PolicyStatus PolicyStatus { get; private set; }
         private List<PolicyVersion> versions = new List<PolicyVersion>();
-        
+        public IList<PolicyVersion> Versions => versions.AsReadOnly();
+
+        public Policy(Guid id, IEnumerable<Event> events)
+        {
+            Id = id;
+            LoadsFromHistory(events);
+        }
+
         public Policy(Offer offer, DateTime purchaseDate, DateTime policyStartDate)
         {
             if (offer.Converted())
@@ -41,7 +49,7 @@ namespace CqrsWithEs.Domain
             var coverPeriod = ValidityPeriod.Between
             (
                 policyStartDate,
-                policyStartDate.Add(offer.CoverPeriod).AddDays(-1)
+                policyStartDate.Add(offer.CoverPeriod)
             );
             var covers = offer.Covers
                 .Select(c => PolicyCover.ForPrice(c, coverPeriod))
@@ -63,8 +71,8 @@ namespace CqrsWithEs.Domain
 
         private void Apply(InitialPolicyVersionCreated @event)
         {
-            policyNumber = @event.PolicyNumber;
-            policyStatus = @event.PolicyStatus;
+            PolicyNumber = @event.PolicyNumber;
+            PolicyStatus = @event.PolicyStatus;
             versions.Add(
                 new PolicyVersion
                 (
@@ -102,6 +110,11 @@ namespace CqrsWithEs.Domain
                 throw new ApplicationException("Policy does not cover annex date");   
             }
 
+            if (versionAtDate.ContainsCover(newCover.CoverCode))
+            {
+                throw new ApplicationException("This cover is already present");
+            }
+
             var newVersionNumber = versions.Count + 1;
             var versionPeriod = ValidityPeriod.Between(effectiveDateOfChange, versionAtDate.CoverPeriod.ValidTo);
             var newCoverage = PolicyCover.ForPrice(newCover, versionPeriod);
@@ -118,7 +131,7 @@ namespace CqrsWithEs.Domain
             );
         }
         
-        private void ApplyChange(CoverageExtendedPolicyVersionCreated @event)
+        private void Apply(CoverageExtendedPolicyVersionCreated @event)
         {
             var versionPeriod = ValidityPeriod.Between(@event.VersionFrom, @event.VersionTo);
             var draft = versions.WithNumber(@event.BaseVersionNumber)
@@ -129,9 +142,10 @@ namespace CqrsWithEs.Domain
                 new UnitPrice(@event.NewCover.Price, @event.NewCover.PriceUnit),
                 ValidityPeriod.Between(@event.NewCover.CoverFrom, @event.NewCover.CoverTo)
             );
+            versions.Add(draft);
         }
 
-        private bool Terminated() => policyStatus == PolicyStatus.Terminated;
+        private bool Terminated() => PolicyStatus == PolicyStatus.Terminated;
     }
 
 
@@ -150,6 +164,7 @@ namespace CqrsWithEs.Domain
         public ValidityPeriod VersionPeriod { get; }
         private List<PolicyCover> covers = new List<PolicyCover>();
         public IReadOnlyCollection<PolicyCover> Covers => covers.AsReadOnly();
+        public Money TotalPremium => covers.Aggregate(Money.Euro(0), (sum, c) => sum + c.Amount);
 
         public PolicyVersion(
             int versionNumber, 
@@ -191,10 +206,12 @@ namespace CqrsWithEs.Domain
                 throw new ApplicationException("Cannot modify non draft version");
             }
             
-            //check dates
+            //TODO: check dates
             
             this.covers.Add(new PolicyCover(coverCode,coverPeriod,price));
         }
+
+        public bool ContainsCover(string coverCode) => covers.Any(c => c.CoverCode == coverCode);
     }
     
     public enum PolicyVersionStatus

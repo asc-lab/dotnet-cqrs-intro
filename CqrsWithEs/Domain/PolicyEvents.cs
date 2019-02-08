@@ -86,7 +86,19 @@ namespace CqrsWithEs.Domain
             PolicyCover newCover
         )
         {
-            
+            VersionNumber = versionNumber;
+            BaseVersionNumber = baseVersionNumber;
+            VersionFrom = versionPeriod.ValidFrom;
+            VersionTo = versionPeriod.ValidTo;
+            NewCover = new PolicyCoverData
+            (
+                newCover.CoverCode,
+                newCover.CoverPeriod.ValidFrom,
+                newCover.CoverPeriod.ValidTo,
+                newCover.Amount,
+                newCover.Price.Price,
+                newCover.Price.PricePeriod
+            );
         }
     }
 
