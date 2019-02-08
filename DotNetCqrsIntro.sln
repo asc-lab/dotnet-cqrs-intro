@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoCqrs.Tests", "NoCqrs.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeparateModels", "SeparateModels\SeparateModels.csproj", "{723116C0-CEB4-4B22-A127-DDAD5D339824}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CqrsWithEs", "CqrsWithEs\CqrsWithEs.csproj", "{B8FCAE52-5FA4-47E2-B91D-6970A9E94268}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CqrsWithEs.Tests", "CqrsWithEs.Tests\CqrsWithEs.Tests.csproj", "{2DE1BB20-E2A8-4427-9463-87AFDE399AAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{723116C0-CEB4-4B22-A127-DDAD5D339824}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{723116C0-CEB4-4B22-A127-DDAD5D339824}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{723116C0-CEB4-4B22-A127-DDAD5D339824}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8FCAE52-5FA4-47E2-B91D-6970A9E94268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8FCAE52-5FA4-47E2-B91D-6970A9E94268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8FCAE52-5FA4-47E2-B91D-6970A9E94268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8FCAE52-5FA4-47E2-B91D-6970A9E94268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DE1BB20-E2A8-4427-9463-87AFDE399AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DE1BB20-E2A8-4427-9463-87AFDE399AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DE1BB20-E2A8-4427-9463-87AFDE399AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DE1BB20-E2A8-4427-9463-87AFDE399AAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
