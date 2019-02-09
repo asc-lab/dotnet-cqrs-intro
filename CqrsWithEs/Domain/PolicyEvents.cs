@@ -152,6 +152,18 @@ namespace CqrsWithEs.Domain
                 .ToList();
         }
     }
+
+    public class TerminalPolicyVersionConfirmed : Event
+    {
+        public int VersionNumber { get; private set; }
+        public PolicyVersionStatus VersionStatus { get; private set; }
+
+        public TerminalPolicyVersionConfirmed(int versionNumber)
+        {
+            VersionNumber = versionNumber;
+            VersionStatus = PolicyVersionStatus.Active;
+        }
+    }
     //---------------------------------------------------------------
 
 

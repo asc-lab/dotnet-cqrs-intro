@@ -9,7 +9,7 @@ namespace CqrsWithEs.Domain
         public static PolicyVersion EffectiveAt(this IEnumerable<PolicyVersion> versions, DateTime effectiveDateOfChange)
         {
             return versions
-                .Where(v => v.PolicyVersionStatus == PolicyVersionStatus.Active)
+                .Where(v => v.VersionStatus == PolicyVersionStatus.Active)
                 .Where(v => v.IsEffectiveOn(effectiveDateOfChange))
                 .OrderByDescending(v => v.VersionNumber)
                 .FirstOrDefault();

@@ -27,10 +27,10 @@ namespace CqrsWithEs.Tests
             //assert state
             Equal(2, policy.Versions.Count());
             Equal(Money.Euro(500), policy.Versions.WithNumber(1).TotalPremium);
-            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).PolicyVersionStatus);
+            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).VersionStatus);
             Equal(Money.Euro(550.41), policy.Versions.WithNumber(2).TotalPremium);
-            Equal(PolicyVersionStatus.Draft, policy.Versions.WithNumber(2).PolicyVersionStatus);
-            Equal(PolicyVersionStatus.Draft, policy.Versions.WithNumber(2).PolicyVersionStatus);
+            Equal(PolicyVersionStatus.Draft, policy.Versions.WithNumber(2).VersionStatus);
+            Equal(PolicyVersionStatus.Draft, policy.Versions.WithNumber(2).VersionStatus);
             
             //assert events
             Single(resultingEvents);

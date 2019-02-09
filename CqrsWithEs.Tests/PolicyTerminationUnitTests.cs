@@ -21,10 +21,10 @@ namespace CqrsWithEs.Tests
             //assert state
             Equal(2, policy.Versions.Count());
             Equal(Money.Euro(500), policy.Versions.WithNumber(1).TotalPremium);
-            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).PolicyVersionStatus);
+            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).VersionStatus);
             
             Equal(PolicyStatus.Terminated, policy.Versions.WithNumber(2).PolicyStatus);
-            Equal(PolicyVersionStatus.Draft, policy.Versions.WithNumber(2).PolicyVersionStatus);
+            Equal(PolicyVersionStatus.Draft, policy.Versions.WithNumber(2).VersionStatus);
             Equal(terminationDate, policy.Versions.WithNumber(2).VersionPeriod.ValidFrom);
             Equal(terminationDate.AddDays(-1), policy.Versions.WithNumber(2).CoverPeriod.ValidTo);
             Equal(new DateTime(2019,1,1), policy.Versions.WithNumber(2).CoverPeriod.ValidFrom);

@@ -210,8 +210,32 @@ namespace CqrsWithEs.Domain
             versions.Add(draft);
         }
 
+        public void ConfirmTermination()
+        {
+            //last version must be draft and terminating
+            var lastVersion = versions.Last();
+
+            if (lastVersion.VersionStatus != PolicyVersionStatus.Draft)
+            {
+                throw new ApplicationException("There is no termination pending");
+            }
+            
+            if (lastVersion.PolicyStatus != PolicyStatus.Terminated)
+            {
+                throw new ApplicationException("Pending version is not terminal");
+            }
+            
+            ApplyChange(new TerminalPolicyVersionConfirmed(lastVersion.VersionNumber));
+        }
+
+        private void Apply(TerminalPolicyVersionConfirmed @event)
+        {
+            var versionToConfirm = versions.WithNumber(@event.VersionNumber);
+            versionToConfirm.Confirm();
+        }
+
         private bool Terminated() => versions.Any(v =>
-            v.PolicyVersionStatus == PolicyVersionStatus.Active && v.PolicyStatus == PolicyStatus.Terminated);
+            v.VersionStatus == PolicyVersionStatus.Active && v.PolicyStatus == PolicyStatus.Terminated);
     }
 
 
@@ -225,7 +249,7 @@ namespace CqrsWithEs.Domain
     {
         public int VersionNumber { get; }
         public PolicyStatus PolicyStatus { get; }
-        public PolicyVersionStatus PolicyVersionStatus { get; }
+        public PolicyVersionStatus VersionStatus { get; private set; }
         public ValidityPeriod CoverPeriod { get; }
         public ValidityPeriod VersionPeriod { get; }
         private List<PolicyCover> covers = new List<PolicyCover>();
@@ -235,14 +259,14 @@ namespace CqrsWithEs.Domain
         public PolicyVersion(
             int versionNumber, 
             PolicyStatus policyStatus, 
-            PolicyVersionStatus policyVersionStatus, 
+            PolicyVersionStatus versionStatus, 
             ValidityPeriod coverPeriod, 
             ValidityPeriod versionPeriod,
             IEnumerable<PolicyCover> policyCovers)
         {
             VersionNumber = versionNumber;
             PolicyStatus = policyStatus;
-            PolicyVersionStatus = policyVersionStatus;
+            VersionStatus = versionStatus;
             CoverPeriod = coverPeriod;
             VersionPeriod = versionPeriod;
             covers.AddRange(policyCovers);
@@ -267,10 +291,12 @@ namespace CqrsWithEs.Domain
 
         public void AddCover(string coverCode, UnitPrice price, ValidityPeriod coverPeriod)
         {
-            if (PolicyVersionStatus != PolicyVersionStatus.Draft)
+            if (VersionStatus != PolicyVersionStatus.Draft)
             {
                 throw new ApplicationException("Cannot modify non draft version");
             }
+            
+            //check if not already present??
             
             //TODO: check dates
             
@@ -278,6 +304,16 @@ namespace CqrsWithEs.Domain
         }
 
         public bool ContainsCover(string coverCode) => covers.Any(c => c.CoverCode == coverCode);
+
+        public void Confirm()
+        {
+            if (VersionStatus != PolicyVersionStatus.Draft)
+            {
+                throw new ApplicationException("Only draft can be confirmed");
+            }
+
+            this.VersionStatus = PolicyVersionStatus.Active;
+        }
     }
     
     public enum PolicyVersionStatus
