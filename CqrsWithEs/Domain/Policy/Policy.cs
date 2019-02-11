@@ -5,7 +5,6 @@ using CqrsWithEs.Domain.Base;
 using CqrsWithEs.Domain.Common;
 using CqrsWithEs.Domain.Offer;
 using CqrsWithEs.Domain.Policy.Events;
-using NodaMoney;
 
 namespace CqrsWithEs.Domain.Policy
 {
@@ -142,7 +141,30 @@ namespace CqrsWithEs.Domain.Policy
             );
             versions.Add(draft);
         }
-        
+
+        public void ConfirmCoverageExtension()
+        {
+            var lastVersion = versions.Last();
+
+            if (lastVersion.VersionStatus != PolicyVersionStatus.Draft)
+            {
+                throw new ApplicationException("There is no extension of coverage pending");
+            }
+            
+            if (lastVersion.PolicyStatus != PolicyStatus.Active)
+            {
+                throw new ApplicationException("Pending version is not coverage extension");
+            }
+            
+            ApplyChange(new CoverageExtendedPolicyVersionConfirmed(lastVersion.VersionNumber));
+        }
+
+        private void Apply(CoverageExtendedPolicyVersionConfirmed @event)
+        {
+            var versionToConfirm = versions.WithNumber(@event.VersionNumber);
+            versionToConfirm.Confirm();
+        }
+
         public void TerminatePolicy(DateTime effectiveDateOfChange)
         {
             if (Terminated())
@@ -236,131 +258,5 @@ namespace CqrsWithEs.Domain.Policy
 
         private bool Terminated() => versions.Any(v =>
             v.VersionStatus == PolicyVersionStatus.Active && v.PolicyStatus == PolicyStatus.Terminated);
-    }
-
-
-    public enum PolicyStatus
-    {
-        Active,
-        Terminated
-    }
-
-    public class PolicyVersion
-    {
-        public int VersionNumber { get; }
-        public PolicyStatus PolicyStatus { get; }
-        public PolicyVersionStatus VersionStatus { get; private set; }
-        public ValidityPeriod CoverPeriod { get; }
-        public ValidityPeriod VersionPeriod { get; }
-        private List<PolicyCover> covers = new List<PolicyCover>();
-        public IReadOnlyCollection<PolicyCover> Covers => covers.AsReadOnly();
-        public Money TotalPremium => covers.Aggregate(Money.Euro(0), (sum, c) => sum + c.Amount);
-
-        public PolicyVersion(
-            int versionNumber, 
-            PolicyStatus policyStatus, 
-            PolicyVersionStatus versionStatus, 
-            ValidityPeriod coverPeriod, 
-            ValidityPeriod versionPeriod,
-            IEnumerable<PolicyCover> policyCovers)
-        {
-            VersionNumber = versionNumber;
-            PolicyStatus = policyStatus;
-            VersionStatus = versionStatus;
-            CoverPeriod = coverPeriod;
-            VersionPeriod = versionPeriod;
-            covers.AddRange(policyCovers);
-        }
-
-        public bool IsEffectiveOn(DateTime theDate) => VersionPeriod.Contains(theDate);
-
-        public bool CoversDate(DateTime theDate) => CoverPeriod.Contains(theDate);
-
-        public PolicyVersion CreateDraftCopy(int newVersionNumber, ValidityPeriod versionPeriod)
-        {
-            return new PolicyVersion
-            (
-                newVersionNumber,
-                PolicyStatus.Active,
-                PolicyVersionStatus.Draft,
-                CoverPeriod,
-                versionPeriod,
-                new List<PolicyCover>(covers)
-            );
-        }
-
-        public void AddCover(string coverCode, UnitPrice price, ValidityPeriod coverPeriod)
-        {
-            if (VersionStatus != PolicyVersionStatus.Draft)
-            {
-                throw new ApplicationException("Cannot modify non draft version");
-            }
-            
-            //check if not already present??
-            
-            //TODO: check dates
-            
-            this.covers.Add(new PolicyCover(coverCode,coverPeriod,price));
-        }
-
-        public bool ContainsCover(string coverCode) => covers.Any(c => c.CoverCode == coverCode);
-
-        public void Confirm()
-        {
-            if (VersionStatus != PolicyVersionStatus.Draft)
-            {
-                throw new ApplicationException("Only draft can be confirmed");
-            }
-
-            this.VersionStatus = PolicyVersionStatus.Active;
-        }
-    }
-    
-    public enum PolicyVersionStatus
-    {
-        Draft,
-        Active,
-        Cancelled
-    }
-
-    public class PolicyCover
-    {
-        public string CoverCode { get; }
-        public ValidityPeriod CoverPeriod { get; }
-        public UnitPrice Price { get; }
-        public Money Amount { get; }
-
-        public PolicyCover(string coverCode, ValidityPeriod coverPeriod, UnitPrice price)
-        {
-            CoverCode = coverCode;
-            CoverPeriod = coverPeriod;
-            Price = price;
-            Amount = CalculateAmount();
-        }
-
-        public static PolicyCover ForPrice(CoverPrice coverPrice, ValidityPeriod coverPeriod)
-        {
-            return new PolicyCover
-            (
-                coverPrice.CoverCode,
-                coverPeriod,
-                new UnitPrice(coverPrice.Price, coverPrice.CoverPeriod)
-            );
-        }
-
-        public PolicyCover EndOn(DateTime lastDateOfCover)
-        {
-            return new PolicyCover
-            (
-                CoverCode,
-                CoverPeriod.EndOn(lastDateOfCover),
-                Price
-            );
-        }
-
-        private Money CalculateAmount()
-        {
-            return decimal.Divide(CoverPeriod.Days, Price.PricePeriod.Days) * Price.Price;
-        }
     }
 }
