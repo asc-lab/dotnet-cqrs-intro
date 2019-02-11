@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Offer
 {
     public interface IOfferRepository
     {

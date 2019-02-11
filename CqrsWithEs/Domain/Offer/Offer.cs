@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using CqrsWithEs.Domain.Common;
+using CqrsWithEs.Domain.Product;
 using Newtonsoft.Json;
 using NodaMoney;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Offer
 {
     public class Offer
     {
@@ -27,7 +29,7 @@ namespace CqrsWithEs.Domain
         (
             Guid id, 
             string number, 
-            Product product, 
+            Product.Product product, 
             Person customer, 
             Person driver, 
             Car car,

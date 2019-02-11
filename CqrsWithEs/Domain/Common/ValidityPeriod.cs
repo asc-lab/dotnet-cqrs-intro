@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using CqrsWithEs.Domain.Base;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Common
 {
     public class ValidityPeriod : ValueObject<ValidityPeriod>,  ICloneable
     {

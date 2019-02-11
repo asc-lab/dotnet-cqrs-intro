@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CqrsWithEs.Domain;
+using CqrsWithEs.Domain.Product;
 
 namespace CqrsWithEs.Tests
 {

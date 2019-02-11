@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Policy
 {
     public static class PolicyVersions
     {

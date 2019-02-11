@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using CqrsWithEs.Dragons;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Base
 {
     public class AggregateRoot
     {

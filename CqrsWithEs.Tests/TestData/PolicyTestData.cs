@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using CqrsWithEs.Domain;
+using CqrsWithEs.Domain.Base;
+using CqrsWithEs.Domain.Policy;
+using CqrsWithEs.Domain.Policy.Events;
 using NodaMoney;
 
 namespace CqrsWithEs.Tests

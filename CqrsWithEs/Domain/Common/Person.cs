@@ -1,4 +1,4 @@
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Common
 {
     public class Person
     {

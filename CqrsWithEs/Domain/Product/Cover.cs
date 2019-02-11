@@ -1,6 +1,6 @@
 using System;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Product
 {
     public class Cover
     {

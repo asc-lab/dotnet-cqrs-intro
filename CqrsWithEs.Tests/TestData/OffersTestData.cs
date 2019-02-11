@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using CqrsWithEs.Domain;
+using CqrsWithEs.Domain.Offer;
+using CqrsWithEs.Domain.Product;
 using NodaMoney;
 using NodaTime;
 

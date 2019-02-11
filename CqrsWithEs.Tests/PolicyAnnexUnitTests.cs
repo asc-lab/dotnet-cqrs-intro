@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
 using CqrsWithEs.Domain;
+using CqrsWithEs.Domain.Offer;
+using CqrsWithEs.Domain.Policy;
+using CqrsWithEs.Domain.Policy.Events;
 using NodaMoney;
 using Xunit;
 using static Xunit.Assert;

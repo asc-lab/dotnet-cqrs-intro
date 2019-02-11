@@ -1,7 +1,7 @@
 using System;
 using NodaMoney;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Policy
 {
     public class UnitPrice
     {

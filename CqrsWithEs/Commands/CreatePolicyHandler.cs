@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CqrsWithEs.Domain;
+using CqrsWithEs.Domain.Offer;
 using MediatR;
 
 namespace CqrsWithEs.Commands

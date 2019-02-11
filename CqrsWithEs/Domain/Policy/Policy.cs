@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Security.Permissions;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore.Internal;
+using CqrsWithEs.Domain.Base;
+using CqrsWithEs.Domain.Common;
+using CqrsWithEs.Domain.Offer;
+using CqrsWithEs.Domain.Policy.Events;
 using NodaMoney;
 
-namespace CqrsWithEs.Domain
+namespace CqrsWithEs.Domain.Policy
 {
     public class Policy : AggregateRoot
     {
@@ -21,7 +21,7 @@ namespace CqrsWithEs.Domain
             LoadsFromHistory(events);
         }
 
-        public Policy(Offer offer, DateTime purchaseDate, DateTime policyStartDate)
+        public Policy(Offer.Offer offer, DateTime purchaseDate, DateTime policyStartDate)
         {
             if (offer.Converted())
             {

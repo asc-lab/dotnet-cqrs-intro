@@ -1,5 +1,6 @@
 using System;
 using CqrsWithEs.Domain;
+using CqrsWithEs.Domain.Common;
 
 namespace CqrsWithEs.Tests
 {
