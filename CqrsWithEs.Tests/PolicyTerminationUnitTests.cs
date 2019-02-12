@@ -3,6 +3,7 @@ using System.Linq;
 using CqrsWithEs.Domain;
 using CqrsWithEs.Domain.Policy;
 using CqrsWithEs.Domain.Policy.Events;
+using CqrsWithEs.Tests.Asserts;
 using NodaMoney;
 using Xunit;
 using static Xunit.Assert;
@@ -21,16 +22,22 @@ namespace CqrsWithEs.Tests
             var resultingEvents = policy.GetUncommittedChanges();
             
             //assert state
-            Equal(2, policy.Versions.Count());
-            Equal(Money.Euro(500), policy.Versions.WithNumber(1).TotalPremium);
-            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).VersionStatus);
+            policy
+                .Should()
+                .HaveVersions(2);
+                
+            policy.Versions.WithNumber(1).Should()
+                .BeActive()
+                .HaveActivePolicyStatus()
+                .HaveTotalPremiumEqualTo(Money.Euro(500));
             
-            Equal(PolicyStatus.Terminated, policy.Versions.WithNumber(2).PolicyStatus);
-            Equal(PolicyVersionStatus.Draft, policy.Versions.WithNumber(2).VersionStatus);
-            Equal(terminationDate, policy.Versions.WithNumber(2).VersionPeriod.ValidFrom);
-            Equal(terminationDate.AddDays(-1), policy.Versions.WithNumber(2).CoverPeriod.ValidTo);
-            Equal(new DateTime(2019,1,1), policy.Versions.WithNumber(2).CoverPeriod.ValidFrom);
-            Equal(Money.Euro(246.58), policy.Versions.WithNumber(2).TotalPremium);
+            policy.Versions.WithNumber(2)
+                .Should()
+                .BeDraft()
+                .HaveTerminatedPolicyStatus()
+                .CoverPeriod(new DateTime(2019,1,1), terminationDate.AddDays(-1))
+                .HaveTotalPremiumEqualTo(Money.Euro(246.58));
+           
             
             //assert events
             Single(resultingEvents);

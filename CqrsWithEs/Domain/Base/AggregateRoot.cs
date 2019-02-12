@@ -39,10 +39,8 @@ namespace CqrsWithEs.Domain.Base
         }
     }
 
-    public interface Message { }
-    public class Command : Message { }
 
-    public class Event : Message, INotification
+    public class Event : INotification
     {
         public Guid Id;
         public int Version;

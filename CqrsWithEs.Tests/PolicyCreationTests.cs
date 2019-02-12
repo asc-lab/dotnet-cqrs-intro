@@ -3,6 +3,7 @@ using System.Linq;
 using CqrsWithEs.Domain;
 using CqrsWithEs.Domain.Policy;
 using CqrsWithEs.Domain.Policy.Events;
+using CqrsWithEs.Tests.Asserts;
 using NodaMoney;
 using Xunit;
 using static Xunit.Assert;
@@ -23,11 +24,15 @@ namespace CqrsWithEs.Tests
             var resultingEvents = policy.GetUncommittedChanges();
             
             //assert state
-            NotNull(policy);
-            Single(policy.Versions);
-            Equal(PolicyStatus.Active, policy.Versions.WithNumber(1).PolicyStatus);
-            Equal(PolicyVersionStatus.Active, policy.Versions.WithNumber(1).VersionStatus);
-            Equal(Money.Euro(500), policy.Versions.WithNumber(1).TotalPremium);
+            policy
+                .Should()
+                .HaveVersions(1);
+                
+            policy.Versions.WithNumber(1)
+                .Should()
+                .BeActive()
+                .HaveActivePolicyStatus()
+                .HaveTotalPremiumEqualTo(Money.Euro(500));
             
             //assert events
             Single(resultingEvents);
