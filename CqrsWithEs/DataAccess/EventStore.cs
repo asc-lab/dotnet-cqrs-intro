@@ -67,7 +67,7 @@ namespace CqrsWithEs.DataAccess
             foreach (var @event in events)
             {
                 i++;
-                //@event.Version = i;
+                @event.Version = i;
 
                 // push event to the event descriptors list for current aggregate
                 eventDescriptors.Add(new EventDescriptor(aggregateId,@event,i));

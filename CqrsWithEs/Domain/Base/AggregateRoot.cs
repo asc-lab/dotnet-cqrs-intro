@@ -21,7 +21,11 @@ namespace CqrsWithEs.Domain.Base
         }
 
         public void LoadsFromHistory(IEnumerable<Event> history) {
-            foreach (var e in history) ApplyChange(e, false);
+            foreach (var e in history)
+            {
+                ApplyChange(e, false);
+                Version += 1;
+            }
         }
 
         protected void ApplyChange(Event @event) {
@@ -37,5 +41,13 @@ namespace CqrsWithEs.Domain.Base
 
     public interface Message { }
     public class Command : Message { }
-    public class Event : Message, INotification { }
+
+    public class Event : Message, INotification
+    {
+        public Guid Id;
+        public int Version;
+        public Event() {
+            Id = Guid.NewGuid();
+        }
+    }
 }
