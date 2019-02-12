@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace CqrsWithEs.Domain.Offer
@@ -7,7 +8,7 @@ namespace CqrsWithEs.Domain.Offer
     {
         Task<Offer> WithNumber(string number);
 
-        Task<IReadOnlyList<Offer>> All();
+        Task<ReadOnlyCollection<Offer>> All();
 
         void Add(Offer offer);
     }

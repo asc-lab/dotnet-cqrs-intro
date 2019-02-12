@@ -12,6 +12,7 @@ namespace CqrsWithEs.Commands
 
     public class CreatePolicyResult
     {
+        public Guid PolicyId { get; set; }
         public string PolicyNumber { get; set; }
     }
 }

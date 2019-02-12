@@ -2,27 +2,35 @@ using System.Threading;
 using System.Threading.Tasks;
 using CqrsWithEs.Domain;
 using CqrsWithEs.Domain.Offer;
+using CqrsWithEs.Domain.Policy;
 using MediatR;
 
 namespace CqrsWithEs.Commands
 {
     public class CreatePolicyHandler : IRequestHandler<CreatePolicyCommand, CreatePolicyResult>
     {
-        private IOfferRepository offerRepository;
+        private readonly IOfferRepository offerRepository;
+        private readonly IPolicyRepository policyRepository;
 
-        public CreatePolicyHandler(IOfferRepository offerRepository)
+        public CreatePolicyHandler(IOfferRepository offerRepository, IPolicyRepository policyRepository)
         {
             this.offerRepository = offerRepository;
+            this.policyRepository = policyRepository;
         }
 
-        public Task<CreatePolicyResult> Handle(CreatePolicyCommand request, CancellationToken cancellationToken)
+        public async Task<CreatePolicyResult> Handle(CreatePolicyCommand request, CancellationToken cancellationToken)
         {
-            var offer = offerRepository.WithNumber(request.OfferNumber);
+            var offer = await offerRepository.WithNumber(request.OfferNumber);
+
+            var policy = Policy.BuyOffer(offer, request.PurchaseDate, request.PolicyStartDate);
             
-            return Task.FromResult(new CreatePolicyResult
+            policyRepository.Save(policy, -1);
+            
+            return new CreatePolicyResult
             {
-                PolicyNumber = null
-            });
+                PolicyId = policy.Id,
+                PolicyNumber = policy.PolicyNumber
+            };
         }
     }
 }

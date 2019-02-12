@@ -6,7 +6,7 @@ using NodaMoney;
 
 namespace CqrsWithEs.Domain.Policy
 {
-    public class PolicyVersion
+    public class PolicyVersion : IPolicyState
     {
         public int VersionNumber { get; }
         public PolicyStatus PolicyStatus { get; }

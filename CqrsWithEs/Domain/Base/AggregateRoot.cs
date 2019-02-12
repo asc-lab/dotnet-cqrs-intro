@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CqrsWithEs.Dragons;
+using MediatR;
 
 namespace CqrsWithEs.Domain.Base
 {
@@ -36,5 +37,5 @@ namespace CqrsWithEs.Domain.Base
 
     public interface Message { }
     public class Command : Message { }
-    public class Event : Message { }
+    public class Event : Message, INotification { }
 }

@@ -119,6 +119,14 @@ namespace CqrsWithEs.Domain.Offer
             Price = price;
             CoverPeriod = coverPeriod;
         }
+        
+        public CoverPrice(string coverCode, Money price, TimeSpan coverPeriod)
+        {
+            Id = Guid.NewGuid();
+            CoverCode = coverCode;
+            Price = price;
+            CoverPeriod = coverPeriod;
+        }
 
         //required by EF
         protected CoverPrice()

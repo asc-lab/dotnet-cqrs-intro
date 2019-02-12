@@ -20,7 +20,12 @@ namespace CqrsWithEs.Domain.Policy
             LoadsFromHistory(events);
         }
 
-        public Policy(Offer.Offer offer, DateTime purchaseDate, DateTime policyStartDate)
+        public static Policy BuyOffer(Offer.Offer offer, DateTime purchaseDate, DateTime policyStartDate)
+        {
+            return new Policy(offer, purchaseDate, policyStartDate);
+        }
+        
+        private Policy(Offer.Offer offer, DateTime purchaseDate, DateTime policyStartDate)
         {
             if (offer.Converted())
             {
@@ -234,7 +239,6 @@ namespace CqrsWithEs.Domain.Policy
 
         public void ConfirmTermination()
         {
-            //last version must be draft and terminating
             var lastVersion = versions.Last();
 
             if (lastVersion.VersionStatus != PolicyVersionStatus.Draft)
@@ -254,6 +258,11 @@ namespace CqrsWithEs.Domain.Policy
         {
             var versionToConfirm = versions.WithNumber(@event.VersionNumber);
             versionToConfirm.Confirm();
+        }
+
+        public IPolicyState EffectiveStateAt(DateTime theDate)
+        {
+            return versions.EffectiveAt(theDate);
         }
 
         private bool Terminated() => versions.Any(v =>

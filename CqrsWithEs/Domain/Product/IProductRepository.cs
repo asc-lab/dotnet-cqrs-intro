@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace CqrsWithEs.Domain.Product
@@ -9,6 +10,6 @@ namespace CqrsWithEs.Domain.Product
 
         Task<Domain.Product.Product> WithCode(string code);
 
-        Task<IReadOnlyList<Domain.Product.Product>> All();
+        Task<ReadOnlyCollection<Domain.Product.Product>> All();
     }
 }

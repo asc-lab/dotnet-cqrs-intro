@@ -18,7 +18,7 @@ namespace CqrsWithEs.Tests
             var purchaseDate = new DateTime(2019, 1, 12);
             var policyStartDate = new DateTime(2019, 1, 15);
             
-            var policy = new Policy(offer, purchaseDate, policyStartDate);
+            var policy = Policy.BuyOffer(offer, purchaseDate, policyStartDate);
 
             var resultingEvents = policy.GetUncommittedChanges();
             
@@ -40,7 +40,7 @@ namespace CqrsWithEs.Tests
         {
             var offer = OffersTestData.StandardOneYearOCOfferValidUntil(new DateTime(2019, 1, 10));
 
-            var ex = Throws<ApplicationException>(() => new Policy(offer, new DateTime(2019, 1, 12),
+            var ex = Throws<ApplicationException>(() => Policy.BuyOffer(offer, new DateTime(2019, 1, 12),
                 new DateTime(2019, 1, 15)));
             
             Equal("Offer expired", ex.Message);
@@ -51,7 +51,7 @@ namespace CqrsWithEs.Tests
         {
             var offer = OffersTestData.ConvertedOfferValidUntil(new DateTime(2019, 1, 10));
             
-            var ex = Throws<ApplicationException>(() => new Policy(offer, new DateTime(2019, 1, 10),
+            var ex = Throws<ApplicationException>(() => Policy.BuyOffer(offer, new DateTime(2019, 1, 10),
                 new DateTime(2019, 1, 10)));
             
             Equal("Offer already converted", ex.Message);
@@ -62,7 +62,7 @@ namespace CqrsWithEs.Tests
         {
             var offer = OffersTestData.RejectedOfferValidUntil(new DateTime(2019, 1, 10));
             
-            var ex = Throws<ApplicationException>(() => new Policy(offer, new DateTime(2019, 1, 10),
+            var ex = Throws<ApplicationException>(() => Policy.BuyOffer(offer, new DateTime(2019, 1, 10),
                 new DateTime(2019, 1, 10)));
             
             Equal("Offer already rejected", ex.Message);
@@ -73,7 +73,7 @@ namespace CqrsWithEs.Tests
         {
             var offer = OffersTestData.StandardOneYearOCOfferValidUntil(new DateTime(2019, 1, 10));
 
-            var ex = Throws<ApplicationException>(() => new Policy(offer, new DateTime(2019, 1, 10),
+            var ex = Throws<ApplicationException>(() => Policy.BuyOffer(offer, new DateTime(2019, 1, 10),
                 new DateTime(2019, 1, 15)));
             
             Equal("Offer not valid at policy start date", ex.Message);
