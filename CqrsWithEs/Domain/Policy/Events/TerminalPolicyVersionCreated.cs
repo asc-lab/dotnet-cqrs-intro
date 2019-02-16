@@ -15,7 +15,14 @@ namespace CqrsWithEs.Domain.Policy.Events
         public DateTime CoverTo { get; private set; }
         public List<PolicyCoverData> Covers { get; private set; }
 
-        public TerminalPolicyVersionCreated(int versionNumber, int baseVersionNumber, DateTime versionFrom, DateTime versionTo, DateTime coverFrom, DateTime coverTo, List<PolicyCoverData> covers)
+        public TerminalPolicyVersionCreated(
+            int versionNumber, 
+            int baseVersionNumber, 
+            DateTime versionFrom, 
+            DateTime versionTo, 
+            DateTime coverFrom, 
+            DateTime coverTo, 
+            List<PolicyCoverData> covers)
         {
             VersionNumber = versionNumber;
             BaseVersionNumber = baseVersionNumber;

@@ -10,6 +10,8 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0"/>
         <PackageReference Include="NodaTime" Version="2.4.4"/>
         <PackageReference Include="xunit" Version="2.4.0"/>
+        <PackageReference Include="CompareNETObjects" Version="4.57.0"/>
+        <PackageReference Include="xUnit.Asserts.Compare" Version="1.0.0.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0"/>
     </ItemGroup>
 

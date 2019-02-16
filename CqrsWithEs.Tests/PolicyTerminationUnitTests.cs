@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CqrsWithEs.Domain;
 using CqrsWithEs.Domain.Policy;
 using CqrsWithEs.Domain.Policy.Events;
 using CqrsWithEs.Tests.Asserts;
+using KellermanSoftware.CompareNetObjects;
 using NodaMoney;
 using Xunit;
+using Xunit.Asserts.Compare;
 using static Xunit.Assert;
 
 namespace CqrsWithEs.Tests
@@ -40,8 +43,25 @@ namespace CqrsWithEs.Tests
            
             
             //assert events
-            Single(resultingEvents);
-            IsType<TerminalPolicyVersionCreated>(resultingEvents.First());
+            resultingEvents
+                .Should()
+                .BeSingle()
+                .ContainEvent(
+                    new TerminalPolicyVersionCreated
+                    (
+                        2,
+                        1,
+                        new DateTime(2019,7,1), 
+                        new DateTime(2020,1,1),
+                        new DateTime(2019,1,1), 
+                        new DateTime(2019,6,30),
+                        new List<PolicyCoverData>
+                        {
+                            new PolicyCoverData("OC",new DateTime(2019,1,1),new DateTime(2019,6,30),Money.Euro(246.58),Money.Euro(500),TimeSpan.FromDays(365))
+                        }
+                    )
+                );
         }
+
     }
 }
