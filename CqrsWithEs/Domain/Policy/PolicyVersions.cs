@@ -19,5 +19,13 @@ namespace CqrsWithEs.Domain.Policy
         {
             return versions.FirstOrDefault(v => v.VersionNumber == versionNumber);
         }
+        
+        public static PolicyVersion LastActive(this IEnumerable<PolicyVersion> versions)
+        {
+            return versions
+                .Where(v => v.VersionStatus == PolicyVersionStatus.Active)
+                .OrderByDescending(v => v.VersionNumber)
+                .FirstOrDefault();
+        }
     }
 }

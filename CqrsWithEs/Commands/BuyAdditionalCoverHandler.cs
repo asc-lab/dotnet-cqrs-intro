@@ -27,6 +27,8 @@ namespace CqrsWithEs.Commands
                 new CoverPrice(request.NewCoverCode, request.NewCoverPrice, request.NewCoverPriceUnit)
             );
             
+            policyRepository.Save(policy, policy.Version);
+            
             return Task.FromResult
             (
                 new BuyAdditionalCoverResult
