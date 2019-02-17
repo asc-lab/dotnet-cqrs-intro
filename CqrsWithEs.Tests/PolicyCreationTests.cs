@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CqrsWithEs.Domain;
 using CqrsWithEs.Domain.Policy;
@@ -35,8 +36,25 @@ namespace CqrsWithEs.Tests
                 .HaveTotalPremiumEqualTo(Money.Euro(500));
             
             //assert events
-            Single(resultingEvents);
-            IsType<InitialPolicyVersionCreated>(resultingEvents.First());
+            resultingEvents
+                .Should()
+                .BeSingle()
+                .ContainEvent(
+                    new InitialPolicyVersionCreated
+                    (
+                        policy.PolicyNumber,
+                        "STD_CAR_INSURANCE",
+                        policyStartDate,
+                        policyStartDate.AddDays(365), 
+                        purchaseDate,
+                        new PersonData("Jan","Kowalski","1111111116"),
+                        new CarData("Ford Focus","WAW1010",2005),
+                        new List<PolicyCoverData>
+                        {
+                            new PolicyCoverData("OC", policyStartDate, policyStartDate.AddDays(365), Money.Euro(500),Money.Euro(500), TimeSpan.FromDays(365))
+                        }
+                    )
+                );
 
         }
         

@@ -34,5 +34,20 @@ namespace CqrsWithEs.Domain.Policy.Events
                 newCover.Price.PricePeriod
             );
         }
+        
+        public CoverageExtendedPolicyVersionCreated
+        (
+            int versionNumber,
+            int baseVersionNumber,
+            ValidityPeriod versionPeriod,
+            PolicyCoverData newCover
+        )
+        {
+            VersionNumber = versionNumber;
+            BaseVersionNumber = baseVersionNumber;
+            VersionFrom = versionPeriod.ValidFrom;
+            VersionTo = versionPeriod.ValidTo;
+            NewCover = newCover;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using CqrsWithEs.Domain;
+using CqrsWithEs.Domain.Common;
 using CqrsWithEs.Domain.Offer;
 using CqrsWithEs.Domain.Policy;
 using CqrsWithEs.Domain.Policy.Events;
@@ -47,8 +48,18 @@ namespace CqrsWithEs.Tests
             
             
             //assert events
-            Single(resultingEvents);
-            IsType<CoverageExtendedPolicyVersionCreated>(resultingEvents.First());
+            resultingEvents
+                .Should()
+                .BeSingle()
+                .ContainEvent(
+                    new CoverageExtendedPolicyVersionCreated
+                    (
+                        2,
+                        1,
+                        ValidityPeriod.Between(new DateTime(2019,7,1), new DateTime(2020,1,1)),
+                        new PolicyCoverData("AC", new DateTime(2019,7,1), new DateTime(2020,1,1), Money.Euro(50.41), Money.Euro(100), TimeSpan.FromDays(365))
+                    )
+                );
         }
 
         [Fact]
