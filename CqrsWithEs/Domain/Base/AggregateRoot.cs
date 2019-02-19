@@ -10,7 +10,7 @@ namespace CqrsWithEs.Domain.Base
         private readonly List<Event> _changes = new List<Event>();
 
         public Guid Id { get; protected set; }
-        public int Version { get; internal set; }
+        public int Version { get; internal set; } = -1;
 
         public IEnumerable<Event> GetUncommittedChanges() {
             return _changes;
