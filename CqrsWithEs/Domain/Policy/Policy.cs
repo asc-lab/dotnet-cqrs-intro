@@ -22,10 +22,10 @@ namespace CqrsWithEs.Domain.Policy
 
         public static Policy BuyOffer(Offer.Offer offer, DateTime purchaseDate, DateTime policyStartDate)
         {
-            return new Policy(offer, purchaseDate, policyStartDate);
+            return new Policy(Guid.NewGuid(), offer, purchaseDate, policyStartDate);
         }
         
-        private Policy(Offer.Offer offer, DateTime purchaseDate, DateTime policyStartDate)
+        private Policy(Guid policyId, Offer.Offer offer, DateTime purchaseDate, DateTime policyStartDate)
         {
             if (offer.Converted())
             {
@@ -58,6 +58,7 @@ namespace CqrsWithEs.Domain.Policy
                 .Select(c => PolicyCover.ForPrice(c, coverPeriod))
                 .ToList();
             
+            Id = policyId;
             ApplyChange(
                 new InitialPolicyVersionCreated
                 (
