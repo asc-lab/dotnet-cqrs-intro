@@ -1,5 +1,6 @@
 using System;
 using CqrsWithEs.Domain.Policy;
+using MediatR;
 
 
 namespace CqrsWithEs.DataAccess
@@ -7,10 +8,13 @@ namespace CqrsWithEs.DataAccess
     public class InMemoryPolicyRepository : IPolicyRepository
     {
         private readonly IEventStore eventStore;
+        private readonly IMediator bus;
 
-        public InMemoryPolicyRepository(IEventStore eventStore)
+        public InMemoryPolicyRepository(IEventStore eventStore, IMediator bus)
         {
             this.eventStore = eventStore;
+            this.bus = bus;
+            this.eventStore.Bus = bus;
         }
 
         public Policy GetById(Guid Id)

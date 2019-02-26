@@ -14,13 +14,14 @@ namespace CqrsWithEs.DataAccess
      */
     public interface IEventStore
     {
+        IMediator Bus { get; set; }
         void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion);
         List<Event> GetEventsForAggregate(Guid aggregateId);
     }
     
     public class EventStore : IEventStore
     {
-        private readonly IMediator bus;
+        public IMediator Bus { get; set; }
         
         private struct EventDescriptor
         {
@@ -37,9 +38,8 @@ namespace CqrsWithEs.DataAccess
             }
         }
 
-        public EventStore(IMediator bus)
+        public EventStore()
         {
-            this.bus = bus;
         }
 
         private readonly IDictionary<Guid, List<EventDescriptor>> current = new ConcurrentDictionary<Guid, List<EventDescriptor>>();
@@ -73,7 +73,7 @@ namespace CqrsWithEs.DataAccess
                 eventDescriptors.Add(new EventDescriptor(aggregateId,@event,i));
 
                 // publish current event to the bus for further processing by subscribers
-                //bus.Publish(@event);
+                Bus.Publish(@event);
             }
         }
 

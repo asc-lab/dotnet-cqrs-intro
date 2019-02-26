@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CqrsWithEs.DataAccess;
+using CqrsWithEs.Init;
+using CqrsWithEs.ReadModel;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,7 +30,10 @@ namespace CqrsWithEs
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMediatR();
             services.AddDataAccess();
+            services.AddDataInitializer();
+            services.AddReadModels(Configuration.GetConnectionString("DefaultConnection"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,8 +49,10 @@ namespace CqrsWithEs
                 app.UseHsts();
             }
 
+            app.UseDataInitializer();
             app.UseHttpsRedirection();
             app.UseMvc();
+            
         }
     }
 }

@@ -6,6 +6,8 @@ using CqrsWithEs.Commands;
 using CqrsWithEs.DataAccess;
 using CqrsWithEs.Domain.Base;
 using CqrsWithEs.Domain.Policy.Events;
+using MediatR;
+using Moq;
 using NodaMoney;
 using Xunit;
 
@@ -38,6 +40,7 @@ namespace CqrsWithEs.Tests
                             }
                         )
                     })
+                    , new Mock<IMediator>().Object
                 )
             );
 
@@ -58,7 +61,8 @@ namespace CqrsWithEs.Tests
 
         private IEventStore StoreWithEvents(Guid id, IEnumerable<Event> events)
         {
-            var store = new EventStore(null);
+            var store = new EventStore();
+            store.Bus = new Mock<IMediator>().Object;
             store.SaveEvents(id, events, -1);
             return store;
         }

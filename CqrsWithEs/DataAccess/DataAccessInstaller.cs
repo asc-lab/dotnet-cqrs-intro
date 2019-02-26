@@ -11,7 +11,7 @@ namespace CqrsWithEs.DataAccess
         {
             services.AddSingleton<IProductRepository, InMemoryProductsRepository>();
             services.AddSingleton<IOfferRepository, InMemoryOfferRepository>();
-            services.AddSingleton<IPolicyRepository, InMemoryPolicyRepository>();
+            services.AddScoped<IPolicyRepository, InMemoryPolicyRepository>();
             services.AddSingleton<IEventStore, EventStore>();
         }
     }
