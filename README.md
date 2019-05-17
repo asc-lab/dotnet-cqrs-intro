@@ -1,5 +1,3 @@
-# CQRS and Event Sourcing Intro For Developers
-
 # CQRS and Event Sourcing Intro for Developers
 
 We live in a world of dynamically changing technologies. New ways of architecturing our solutions, new frameworks and libraries seem to appear on almost daily basis. 
