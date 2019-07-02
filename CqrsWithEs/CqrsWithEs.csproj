@@ -12,15 +12,8 @@
         <PackageReference Include="Microsoft.AspNetCore.App"/>
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
         <PackageReference Include="NodaMoney" Version="1.0.5"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\..\.nuget\packages\dapper\1.50.5\lib\netstandard2.0\Dapper.dll</HintPath>
-        </Reference>
-        <Reference Include="Npgsql, Version=4.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7">
-            <HintPath>..\..\..\.nuget\packages\npgsql\4.0.3\lib\netstandard2.0\Npgsql.dll</HintPath>
-        </Reference>
+        <PackageReference Include="Dapper" Version="1.50.5"/>
+        <PackageReference Include="Npgsql" Version="4.0.7" />
     </ItemGroup>
 
 </Project>
